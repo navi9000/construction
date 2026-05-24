@@ -6,7 +6,9 @@ import {
   TableColumnsType,
   Typography,
 } from "antd"
-import type { FC } from "react"
+import ru from "antd/es/date-picker/locale/ru_RU"
+import { useState, type FC } from "react"
+import TableModal from "./table-modal"
 
 interface TableEntry {
   key: string
@@ -74,14 +76,25 @@ const columns: TableColumnsType<TableEntry> = [
 ]
 
 const EntryList: FC = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const openModal = () => {
+    setIsModalOpen(true)
+  }
+
+  const closeModal = () => {
+    setIsModalOpen(false)
+  }
+
   return (
     <main>
       <Typography.Title>Список записей</Typography.Title>
       <Flex justify="space-between">
-        <DatePicker />
-        <Button>Новая запись</Button>
+        <DatePicker locale={ru} />
+        <Button onClick={openModal}>Новая запись</Button>
       </Flex>
       <Table dataSource={dataSource} columns={columns} pagination={false} />
+      <TableModal isOpen={isModalOpen} close={closeModal} />
     </main>
   )
 }
