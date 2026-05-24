@@ -1,12 +1,22 @@
-import express from "express"
+import server from "./server"
+import { sequelize } from "./db"
+import { SERVER_PORT } from "./config/constants"
 
-const app = express()
-const port = Number(process.env.PORT ?? 4000)
+async function run() {
+  try {
+    await sequelize.authenticate()
+    console.log("Connection has been established successfully.")
+    await sequelize.sync({
+      force: true,
+      alter: true,
+      logging: false,
+    })
+    server.listen(SERVER_PORT, () => {
+      console.log(`Server is running at http://localhost:${SERVER_PORT}`)
+    })
+  } catch (error) {
+    console.error("Unable to connect to the database:", error)
+  }
+}
 
-app.get("/api", (_req, res) => {
-  res.json({ message: "Hello from Express!" })
-})
-
-app.listen(port, () => {
-  console.log(`Server listening on http://localhost:${port}`)
-})
+run()
