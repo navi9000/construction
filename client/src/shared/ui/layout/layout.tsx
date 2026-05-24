@@ -1,5 +1,5 @@
 import { FC } from "react"
-import { Outlet, useLocation } from "react-router"
+import { Outlet } from "react-router"
 import { Flex } from "antd"
 import TextButton from "./text-button"
 
