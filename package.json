@@ -1,0 +1,14 @@
+{
+  "name": "construction",
+  "private": true,
+  "version": "0.0.1",
+  "packageManager": "pnpm@8.10.0",
+  "scripts": {
+    "install:all": "pnpm install",
+    "dev:client": "pnpm --filter construction-client dev",
+    "build:client": "pnpm --filter construction-client build",
+    "preview:client": "pnpm --filter construction-client preview",
+    "dev:server": "pnpm --filter construction-server dev",
+    "start:server": "pnpm --filter construction-server start"
+  }
+}
