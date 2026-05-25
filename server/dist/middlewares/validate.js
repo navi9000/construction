@@ -12,25 +12,26 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.validate = void 0;
 const validate = (validations) => {
     return (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-        // sequential processing, stops running validations chain if one fails.
+        const errors = [];
         for (const validation of validations) {
             const result = yield validation.run(req);
             if (!result.isEmpty()) {
-                return res
-                    .status(400)
-                    .json({
-                    is_success: false,
-                    errors: result
-                        .array()
-                        .map((error) => {
-                        var _a;
-                        return [
-                            (_a = error === null || error === void 0 ? void 0 : error.path) !== null && _a !== void 0 ? _a : "unknown",
-                            error.msg,
-                        ];
-                    }),
-                });
+                errors.push(...result
+                    .array()
+                    .map((error) => {
+                    var _a;
+                    return [
+                        (_a = error === null || error === void 0 ? void 0 : error.path) !== null && _a !== void 0 ? _a : "unknown",
+                        error.msg,
+                    ];
+                }));
             }
+        }
+        if (errors.length > 0) {
+            return res.status(400).json({
+                is_success: false,
+                errors,
+            });
         }
         next();
     });

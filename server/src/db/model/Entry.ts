@@ -11,7 +11,14 @@ interface EntryAttributes {
 
 type EntryCreationAttributes = Omit<EntryAttributes, "id">
 
-class Entry extends Model<EntryAttributes, EntryCreationAttributes> {}
+class Entry extends Model<EntryAttributes, EntryCreationAttributes> {
+  declare id: number
+  declare date: string
+  declare amount: number
+  declare unit_id: number
+  declare job_id: number
+  declare worker_name: string
+}
 
 export default function initEntry(sequelize: Sequelize) {
   Entry.init(
@@ -26,7 +33,7 @@ export default function initEntry(sequelize: Sequelize) {
         allowNull: false,
       },
       amount: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.FLOAT,
         allowNull: false,
       },
       unit_id: {

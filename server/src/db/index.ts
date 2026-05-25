@@ -11,9 +11,9 @@ Job.belongsToMany(Unit, { through: "Job_Unit" })
 Unit.belongsToMany(Job, { through: "Job_Unit" })
 
 Job.hasMany(Entry, { foreignKey: "job_id" })
-Entry.belongsTo(Job, { foreignKey: "id" })
+Entry.belongsTo(Job, { foreignKey: "job_id" })
 
 Unit.hasMany(Entry, { foreignKey: "unit_id" })
-Entry.belongsTo(Unit, { foreignKey: "id" })
+Entry.belongsTo(Unit, { foreignKey: "unit_id" })
 
 export { sequelize, Unit, Job, Entry }

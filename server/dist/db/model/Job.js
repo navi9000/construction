@@ -14,6 +14,7 @@ function initJob(sequelize) {
         name: {
             type: sequelize_1.DataTypes.STRING,
             allowNull: false,
+            unique: true,
         },
     }, { sequelize, modelName: "job" });
     return Job;
