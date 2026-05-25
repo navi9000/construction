@@ -7,7 +7,10 @@ interface JobAttributes {
 
 type JobCreationAttributes = Omit<JobAttributes, "id">
 
-class Job extends Model<JobAttributes, JobCreationAttributes> {}
+class Job extends Model<JobAttributes, JobCreationAttributes> {
+  declare id: number
+  declare name: string
+}
 
 export default function initJob(sequelize: Sequelize) {
   Job.init(
@@ -20,6 +23,7 @@ export default function initJob(sequelize: Sequelize) {
       name: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
       },
     },
     { sequelize, modelName: "job" },

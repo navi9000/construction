@@ -7,8 +7,8 @@ async function run() {
     await sequelize.authenticate()
     console.log("Connection has been established successfully.")
     await sequelize.sync({
-      force: true,
-      alter: true,
+      force: false,
+      alter: false,
       logging: false,
     })
     server.listen(SERVER_PORT, () => {
