@@ -12,10 +12,10 @@ app.use("/units", units)
 app.use("/jobs", jobs)
 app.use("/entries", entries)
 
-app.get("/", (req, res) => {
-  res.json({
-    is_success: true,
-    message: "Hello world",
+app.all("*", (req, res) => {
+  res.status(404).json({
+    is_success: false,
+    errors: ["server", "Адрес не существует"],
   })
 })
 
