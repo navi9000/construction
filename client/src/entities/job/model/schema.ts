@@ -30,6 +30,12 @@ export interface CreateJobParams {
   unit_ids: number[]
 }
 
+export type CreateJobErrors = Partial<Record<keyof CreateJobParams, string>>
+
+export interface CreateJobErrorResponse {
+  errors: CreateJobErrors
+}
+
 export const columns: TableColumnsType<JobTableEntry> = [
   {
     title: "Вид работ",

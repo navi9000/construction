@@ -1,5 +1,6 @@
 export {
   columns,
+  type CreateJobErrors,
   type JobTableEntry,
   type UnitServerModel,
 } from "./model/schema"

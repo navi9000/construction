@@ -1,11 +1,16 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import {
+  CreateJobErrorResponse,
+  CreateJobErrors,
   CreateJobParams,
   GetJobsResponse,
   JobServerModel,
   JobTableEntry,
 } from "../model/schema"
-import { SuccessfulApiResponseWithMeta } from "@/shared/api/model/schema"
+import {
+  SuccessfulApiResponseWithMeta,
+  UnsuccessfulApiResponse,
+} from "@/shared/api/model/schema"
 
 export const jobsApi = createApi({
   reducerPath: "jobs",
@@ -36,12 +41,18 @@ export const jobsApi = createApi({
         url: `/`,
         method: "POST",
         body: {
-          data: {
-            name,
-            unit_ids,
-          },
+          name,
+          unit_ids,
         },
       }),
+      transformErrorResponse: (response): CreateJobErrorResponse => {
+        return {
+          errors: (response.data as UnsuccessfulApiResponse).errors.reduce(
+            (prev, curr) => ({ ...prev, [curr[0]]: curr[1] }),
+            {} as CreateJobErrors,
+          ),
+        }
+      },
       invalidatesTags: ["jobs"],
     }),
   }),

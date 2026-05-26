@@ -1,8 +1,8 @@
 import { Flex } from "antd"
 import { ReactNode } from "react"
-import { TableEntry } from "../model/schema"
+import { JobTableEntry } from "../model/schema"
 
-type ItemButtons = (_: any, record: TableEntry) => ReactNode
+type ItemButtons = (_: any, record: JobTableEntry) => ReactNode
 
 const ItemButtons: ItemButtons = (_, record) => (
   <Flex justify="end" gap="small">
