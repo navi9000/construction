@@ -6,6 +6,7 @@ import {
   GetJobsResponse,
   JobServerModel,
   JobTableEntry,
+  UpdateJobParams,
 } from "../model/schema"
 import {
   SuccessfulApiResponseWithMeta,
@@ -55,7 +56,24 @@ export const jobsApi = createApi({
       },
       invalidatesTags: ["jobs"],
     }),
+    updateJob: builder.mutation<JobTableEntry, UpdateJobParams>({
+      query: ({ id, ...body }) => ({
+        url: `/${id}`,
+        method: "PUT",
+        body,
+      }),
+      transformErrorResponse: (response): CreateJobErrorResponse => {
+        return {
+          errors: (response.data as UnsuccessfulApiResponse).errors.reduce(
+            (prev, curr) => ({ ...prev, [curr[0]]: curr[1] }),
+            {} as CreateJobErrors,
+          ),
+        }
+      },
+      invalidatesTags: ["jobs"],
+    }),
   }),
 })
 
-export const { useGetJobsQuery, useAddJobMutation } = jobsApi
+export const { useGetJobsQuery, useAddJobMutation, useUpdateJobMutation } =
+  jobsApi

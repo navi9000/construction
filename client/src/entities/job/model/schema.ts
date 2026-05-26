@@ -14,6 +14,7 @@ export interface JobServerModel {
 }
 
 export interface JobTableEntry {
+  id: number
   key: string
   name: string
   units: UnitServerModel[]
@@ -29,6 +30,8 @@ export interface CreateJobParams {
   name: string
   unit_ids: number[]
 }
+
+export type UpdateJobParams = { id: number } & Partial<CreateJobParams>
 
 export type CreateJobErrors = Partial<Record<keyof CreateJobParams, string>>
 

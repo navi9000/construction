@@ -10,6 +10,9 @@ importers:
 
   client:
     dependencies:
+      '@ant-design/icons':
+        specifier: ^6.2.3
+        version: 6.2.3(react-dom@19.2.6)(react@19.2.6)
       '@reduxjs/toolkit':
         specifier: ^2.12.0
         version: 2.12.0(react-redux@9.3.0)(react@19.2.6)

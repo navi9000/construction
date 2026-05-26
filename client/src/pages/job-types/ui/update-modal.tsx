@@ -1,4 +1,5 @@
-import { useAddJobMutation, type CreateJobErrors } from "@/entities/job"
+import { JobTableEntry, type CreateJobErrors } from "@/entities/job"
+import { useUpdateJobMutation } from "@/entities/job/api/jobs-api"
 import {
   useAddUnitMutation,
   useGetUnitsQuery,
@@ -10,9 +11,10 @@ import { FC, MouseEventHandler, useState } from "react"
 interface TableModalProps {
   isOpen: boolean
   close: () => void
+  job: JobTableEntry
 }
 
-const getCreateJobErrors = (error: unknown): CreateJobErrors | undefined => {
+const getUpdateJobErrors = (error: unknown): CreateJobErrors | undefined => {
   if (!error || typeof error !== "object" || !("errors" in error)) {
     return undefined
   }
@@ -20,15 +22,19 @@ const getCreateJobErrors = (error: unknown): CreateJobErrors | undefined => {
   return error.errors as CreateJobErrors
 }
 
-const TableModal: FC<TableModalProps> = ({ isOpen, close }) => {
+const UpdateModal: FC<TableModalProps> = ({ isOpen, close, job }) => {
   const { data } = useGetUnitsQuery({})
   const [addUnit, { isLoading: isAddingUnit }] = useAddUnitMutation()
-  const [addJob, { isLoading: isAddingJob, error: addJobError }] =
-    useAddJobMutation()
-  const [name, setName] = useState("")
-  const [selectedUnits, setSelectedUnits] = useState<UnitOption[]>([])
+  const [updateJob, { isLoading: isUpdatingJob, error: updateJobError }] =
+    useUpdateJobMutation()
+  const [name, setName] = useState(job.name)
+  const [selectedUnits, setSelectedUnits] = useState<UnitOption[]>(
+    (data?.optionList ?? []).filter((option) =>
+      job.units.map((unit) => unit.id.toString()).includes(option.value),
+    ),
+  )
   const [unitSearch, setUnitSearch] = useState("")
-  const addJobErrors = getCreateJobErrors(addJobError)
+  const updateJobErrors = getUpdateJobErrors(updateJobError)
 
   const newUnitName = unitSearch.trim()
   const hasMatchingUnit = data?.optionList.some(
@@ -61,14 +67,13 @@ const TableModal: FC<TableModalProps> = ({ isOpen, close }) => {
 
   const onSubmit: MouseEventHandler = async (e) => {
     try {
-      const { error } = await addJob({
+      const { error } = await updateJob({
+        id: job.id,
         name,
         unit_ids: selectedUnits.map((unit) => Number(unit.value)),
       })
 
       if (!error) {
-        setName("")
-        setSelectedUnits([])
         close()
       }
     } catch {}
@@ -88,16 +93,16 @@ const TableModal: FC<TableModalProps> = ({ isOpen, close }) => {
       onOk={onSubmit}
       onCancel={onCancel}
       title="Новая запись"
-      okText="Создать"
+      okText="Изменить"
       cancelText="Отмена"
-      okButtonProps={{ disabled: isAddingJob, loading: isAddingJob }}
+      okButtonProps={{ disabled: isUpdatingJob, loading: isUpdatingJob }}
     >
       <Form>
         <Form.Item label="Вид работ">
           <Input value={name} onChange={(e) => setName(e.target.value)} />
-          {addJobErrors?.name && (
+          {updateJobErrors?.name && (
             <Typography.Text type="danger">
-              {addJobErrors.name}
+              {updateJobErrors.name}
             </Typography.Text>
           )}
         </Form.Item>
@@ -140,9 +145,9 @@ const TableModal: FC<TableModalProps> = ({ isOpen, close }) => {
             }}
             notFoundContent={<div>Не найдено</div>}
           />
-          {addJobErrors?.unit_ids && (
+          {updateJobErrors?.unit_ids && (
             <Typography.Text type="danger">
-              {addJobErrors.unit_ids}
+              {updateJobErrors.unit_ids}
             </Typography.Text>
           )}
         </Form.Item>
@@ -151,4 +156,4 @@ const TableModal: FC<TableModalProps> = ({ isOpen, close }) => {
   )
 }
 
-export default TableModal
+export default UpdateModal
