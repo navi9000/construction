@@ -1,27 +1,17 @@
-import { useState } from "react"
-import { TableEntry } from "../model/table-model"
-
-const dataSource: TableEntry[] = [
-  {
-    key: "1",
-    job: "Кладка перегородок",
-    unit: "м3",
-  },
-  {
-    key: "2",
-    job: "Монтаж опалубки",
-    unit: "м3",
-  },
-]
+import { useGetJobsQuery } from "@/entities/job"
 
 export function useTableData() {
-  const [itemList, setItemList] = useState(dataSource)
+  const { data, isLoading, isError } = useGetJobsQuery({})
+
+  console.log({ data, isLoading, isError })
 
   return {
-    list: itemList,
     pagination: {
-      current: 1,
-      total: 50,
+      current: data?.meta.page,
+      total: data?.meta.total_pages,
     },
+    data,
+    isLoading,
+    isError,
   }
 }

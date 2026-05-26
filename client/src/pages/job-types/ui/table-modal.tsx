@@ -1,5 +1,10 @@
-import { Modal, Input, Form, DatePicker, Space, Select } from "antd"
-import { FC } from "react"
+import {
+  useAddUnitMutation,
+  useGetUnitsQuery,
+  type UnitOption,
+} from "@/entities/unit"
+import { Modal, Input, Form, Select } from "antd"
+import { FC, useState } from "react"
 
 interface TableModalProps {
   isOpen: boolean
@@ -7,6 +12,11 @@ interface TableModalProps {
 }
 
 const TableModal: FC<TableModalProps> = ({ isOpen, close }) => {
+  const { data } = useGetUnitsQuery({})
+  const [addUnit] = useAddUnitMutation()
+  const [name, setName] = useState("")
+  const [selectedUnits, setSelectedUnits] = useState<UnitOption[]>([])
+
   const onSubmit = () => {
     close()
   }
@@ -14,6 +24,12 @@ const TableModal: FC<TableModalProps> = ({ isOpen, close }) => {
   const onCancel = () => {
     close()
   }
+
+  if (!data) {
+    return null
+  }
+
+  console.log({ data })
 
   return (
     <Modal
@@ -24,10 +40,25 @@ const TableModal: FC<TableModalProps> = ({ isOpen, close }) => {
     >
       <Form>
         <Form.Item label="Вид работ">
-          <Input />
+          <Input value={name} onChange={(e) => setName(e.target.value)} />
         </Form.Item>
         <Form.Item label="Единица измерения">
-          <Select />
+          <Select
+            options={data.optionList}
+            mode="multiple"
+            value={selectedUnits}
+            onChange={setSelectedUnits}
+            popupRender={(menu) => {
+              console.log({ menu })
+              return (
+                <>
+                  {menu}
+                  <div>Test</div>
+                </>
+              )
+            }}
+            notFoundContent={<div>Не найдено</div>}
+          />
         </Form.Item>
       </Form>
     </Modal>

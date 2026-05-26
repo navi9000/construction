@@ -3,11 +3,11 @@ import { type FC } from "react"
 import TableModal from "./table-modal"
 import { useModal } from "@/widgets/modal"
 import { useTableData } from "../api/use-table-data"
-import { columns } from "../model/table-model"
+import { columns } from "@/entities/job"
 
 const JobTypes: FC = () => {
   const [isOpen, openModal, closeModal] = useModal()
-  const { list, pagination } = useTableData()
+  const { pagination, data, isLoading, isError } = useTableData()
 
   return (
     <main>
@@ -15,8 +15,18 @@ const JobTypes: FC = () => {
       <Flex justify="end">
         <Button onClick={openModal}>Новый вид работ</Button>
       </Flex>
-      <Table dataSource={list} columns={columns} pagination={pagination} />
-      <TableModal isOpen={isOpen} close={closeModal} />
+      {isLoading && <Typography.Text>Загрузка...</Typography.Text>}
+      {isError && <Typography.Text>Ошибка</Typography.Text>}
+      {!isLoading && !isError && (
+        <>
+          <Table
+            dataSource={data?.jobList}
+            columns={columns}
+            pagination={pagination}
+          />
+          <TableModal isOpen={isOpen} close={closeModal} />
+        </>
+      )}
     </main>
   )
 }
