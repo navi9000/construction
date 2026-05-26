@@ -6,7 +6,7 @@ interface TableModalProps {
   close: () => void
 }
 
-const TableModal: FC<TableModalProps> = ({ isOpen, close }) => {
+const CreateTableModal: FC<TableModalProps> = ({ isOpen, close }) => {
   const onSubmit = () => {
     close()
   }
@@ -43,4 +43,4 @@ const TableModal: FC<TableModalProps> = ({ isOpen, close }) => {
   )
 }
 
-export default TableModal
+export default CreateTableModal

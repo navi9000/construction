@@ -1,7 +1,7 @@
-import { useGetJobsQuery } from "@/entities/job"
+import { useGetEntriesQuery } from "@/entities/entry"
 
 export function useTableData() {
-  const { data, isLoading, isError } = useGetJobsQuery({})
+  const { data, isLoading, isError } = useGetEntriesQuery({})
 
   return {
     pagination: {

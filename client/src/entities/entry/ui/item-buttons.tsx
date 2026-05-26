@@ -1,6 +1,6 @@
 import { Flex } from "antd"
 import { ReactNode } from "react"
-import { TableEntry } from "../model/table-model"
+import { TableEntry } from "../model/schema"
 
 type ItemButtons = (_: any, record: TableEntry) => ReactNode
 

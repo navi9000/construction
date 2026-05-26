@@ -23,8 +23,6 @@ const JobTypes: FC = () => {
 
   const isUpdateModalOpen = selectedId !== null
 
-  console.log({ data })
-
   return (
     <ModalContextProvider
       update={{
