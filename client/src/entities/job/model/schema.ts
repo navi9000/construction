@@ -23,7 +23,6 @@ export interface JobTableEntry {
 
 export interface GetJobsResponse {
   jobList: JobTableEntry[]
-  meta: ApiMeta
 }
 
 export interface CreateJobParams {

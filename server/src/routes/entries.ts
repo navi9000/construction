@@ -9,7 +9,7 @@ router.post(
   "/",
   validate([
     body("date", "Укажите дату").isString().notEmpty().trim().escape(),
-    body("amount", "Укажите количество").isNumeric(),
+    body("amount", "Укажите количество").isFloat({ min: 0.01 }),
     body("unit_id", "Выберите единицу измерения").isInt({ min: 1 }),
     body("job_id", "Выберите вид работ").isInt({ min: 1 }),
     body("worker_name", "Укажите ФИО исполнителя")
@@ -127,7 +127,7 @@ router.put(
       .isLength({ min: 1 })
       .trim()
       .escape(),
-    body("amount", "Укажите количество").optional().isNumeric(),
+    body("amount", "Укажите количество").optional().isFloat({ min: 0.01 }),
     body("unit_id", "Выберите единицу измерения").optional().isInt({ min: 1 }),
     body("job_id", "Выберите вид работ").optional().isInt({ min: 1 }),
     body("worker_name", "Укажите ФИО исполнителя")

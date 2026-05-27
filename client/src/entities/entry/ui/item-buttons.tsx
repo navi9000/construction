@@ -1,13 +1,15 @@
 import { Flex } from "antd"
 import { ReactNode } from "react"
-import { TableEntry } from "../model/schema"
+import { EntryTableEntry } from "../model/schema"
+import EditButton from "./edit-button"
+import DeleteButton from "./delete-button"
 
-type ItemButtons = (_: any, record: TableEntry) => ReactNode
+type ItemButtons = (_: unknown, record: EntryTableEntry) => ReactNode
 
-const ItemButtons: ItemButtons = (_, record) => (
+const ItemButtons: ItemButtons = (_, { id }) => (
   <Flex justify="end" gap="small">
-    <a>Редактировать</a>
-    <a>Удалить</a>
+    <EditButton id={id} />
+    <DeleteButton id={id} />
   </Flex>
 )
 

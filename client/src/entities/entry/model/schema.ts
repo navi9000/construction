@@ -23,6 +23,7 @@ export interface EntryServerModel {
 }
 
 export interface EntryTableEntry {
+  id: number
   key: string
   date: string
   job: JobServerModel
@@ -40,8 +41,8 @@ export interface GetEntriesResponse {
 
 export interface CreateEntryParams {
   date: string
-  job_id: string
-  unit_id: string
+  job_id: number
+  unit_id: number
   amount: number
   worker_name: string
 }

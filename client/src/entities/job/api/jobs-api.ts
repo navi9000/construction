@@ -9,6 +9,7 @@ import {
   UpdateJobParams,
 } from "../model/schema"
 import {
+  SuccessfulApiResponse,
   SuccessfulApiResponseWithMeta,
   UnsuccessfulApiResponse,
 } from "@/shared/api/model/schema"
@@ -25,7 +26,7 @@ export const jobsApi = createApi({
         url: "",
       }),
       transformResponse: (
-        response: SuccessfulApiResponseWithMeta<JobServerModel[]>,
+        response: SuccessfulApiResponse<JobServerModel[]>,
       ) => ({
         jobList: response.data.map((item) => ({
           ...item,
@@ -33,7 +34,6 @@ export const jobsApi = createApi({
           unitsStringified: item.units.map((unit) => unit.name).join("; "),
           key: item.id.toString(),
         })),
-        meta: response.meta,
       }),
       providesTags: ["jobs"],
     }),

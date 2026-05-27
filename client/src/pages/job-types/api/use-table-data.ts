@@ -4,10 +4,6 @@ export function useTableData() {
   const { data, isLoading, isError } = useGetJobsQuery({})
 
   return {
-    pagination: {
-      current: data?.meta.page,
-      total: data?.meta.total_pages,
-    },
     data,
     isLoading,
     isError,

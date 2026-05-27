@@ -1,7 +1,7 @@
 import { Button, DatePicker, Flex, Table, Typography } from "antd"
 import ru from "antd/es/date-picker/locale/ru_RU"
 import { type FC } from "react"
-import CreateTableModal from "./create-table-modal"
+import CreateModal from "./create-modal"
 import { useModal } from "@/widgets/modal"
 import { useTableData } from "../api/use-table-data"
 import { columns } from "@/entities/entry"
@@ -17,6 +17,7 @@ const EntryList: FC = () => {
         <DatePicker locale={ru} />
         <Button onClick={openModal}>Новая запись</Button>
       </Flex>
+      <br />
       {isLoading && <Typography.Text>Загрузка...</Typography.Text>}
       {isError && <Typography.Text>Ошибка</Typography.Text>}
       {!isLoading && !isError && (
@@ -26,7 +27,7 @@ const EntryList: FC = () => {
             columns={columns}
             pagination={pagination}
           />
-          <CreateTableModal isOpen={isOpen} close={closeModal} />
+          <CreateModal isOpen={isOpen} close={closeModal} />
         </>
       )}
     </main>

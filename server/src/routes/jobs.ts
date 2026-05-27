@@ -98,60 +98,35 @@ router.post(
   },
 )
 
-router.get(
-  "/",
-  validate([query("page").isNumeric().optional().escape()]),
-  async (req, res) => {
-    const page = Number(req.query.page ?? 1)
-    const limit = 10
-    const offset = (page - 1) * limit
-
-    if (!Number.isInteger(page) || page < 1) {
-      return res.status(400).json({
-        is_success: false,
-        errors: [
-          ["page", "Номер страницы должен быть целым положительным числом"],
-        ],
-      })
-    }
-
-    try {
-      const { count, rows } = await Job.findAndCountAll({
-        attributes: ["id", "name"],
-        distinct: true,
-        include: [
-          {
-            model: Unit,
-            attributes: ["id", "name"],
-            through: {
-              attributes: [],
-            },
+router.get("/", async (req, res) => {
+  try {
+    const { count, rows } = await Job.findAndCountAll({
+      attributes: ["id", "name"],
+      distinct: true,
+      include: [
+        {
+          model: Unit,
+          attributes: ["id", "name"],
+          through: {
+            attributes: [],
           },
-        ],
-        limit,
-        offset,
-        order: [["name", "ASC"]],
-      })
-
-      return res.json({
-        is_success: true,
-        data: rows,
-        meta: {
-          page,
-          per_page: limit,
-          total: count,
-          total_pages: Math.ceil(count / limit),
         },
-      })
-    } catch (error) {
-      console.error("Failed to fetch jobs:", error)
-      return res.status(500).json({
-        is_success: false,
-        errors: [["server", "Не удалось загрузить список видов работ"]],
-      })
-    }
-  },
-)
+      ],
+      order: [["name", "ASC"]],
+    })
+
+    return res.json({
+      is_success: true,
+      data: rows,
+    })
+  } catch (error) {
+    console.error("Failed to fetch jobs:", error)
+    return res.status(500).json({
+      is_success: false,
+      errors: [["server", "Не удалось загрузить список видов работ"]],
+    })
+  }
+})
 
 router.put(
   "/:job_id",

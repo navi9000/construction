@@ -9,7 +9,7 @@ import UpdateModal from "./update-modal"
 
 const JobTypes: FC = () => {
   const [isCreateModalOpen, openCreateModal, closeCreateModal] = useModal()
-  const { pagination, data, isLoading, isError } = useTableData()
+  const { data, isLoading, isError } = useTableData()
 
   const [selectedId, setSelectedId] = useState<number | null>(null)
 
@@ -32,10 +32,11 @@ const JobTypes: FC = () => {
       }}
     >
       <main>
-        <Typography.Title>Список записей</Typography.Title>
+        <Typography.Title>Виды работ</Typography.Title>
         <Flex justify="end">
           <Button onClick={openCreateModal}>Новый вид работ</Button>
         </Flex>
+        <br />
         {isLoading && <Typography.Text>Загрузка...</Typography.Text>}
         {isError && <Typography.Text>Ошибка</Typography.Text>}
         {!isLoading && !isError && (
@@ -43,7 +44,7 @@ const JobTypes: FC = () => {
             <Table
               dataSource={data?.jobList}
               columns={columns}
-              pagination={pagination}
+              pagination={false}
             />
             <CreateModal isOpen={isCreateModalOpen} close={closeCreateModal} />
             {isUpdateModalOpen && (
