@@ -6,5 +6,10 @@ export {
   useGetEntriesQuery,
   useAddEntryMutation,
   useUpdateEntryMutation,
+  useDeleteEntryMutation,
 } from "./api/entries-api"
-export { columns, type EntryTableEntry } from "./model/schema"
+export {
+  columns,
+  type EntryTableEntry,
+  type CreateEntryErrors,
+} from "./model/schema"

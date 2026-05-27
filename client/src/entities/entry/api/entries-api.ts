@@ -1,13 +1,4 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
-// import {
-//   CreateJobErrorResponse,
-//   CreateJobErrors,
-//   CreateJobParams,
-//   GetJobsResponse,
-//   JobServerModel,
-//   JobTableEntry,
-//   UpdateJobParams,
-// } from "../model/schema"
 import {
   SuccessfulApiResponseWithMeta,
   UnsuccessfulApiResponse,
@@ -78,6 +69,21 @@ export const entriesApi = createApi({
       },
       invalidatesTags: ["entries"],
     }),
+    deleteEntry: builder.mutation<EntryTableEntry, number>({
+      query: (id) => ({
+        url: `/${id}`,
+        method: "DELETE",
+      }),
+      transformErrorResponse: (response): CreateEntryErrorResponse => {
+        return {
+          errors: (response.data as UnsuccessfulApiResponse).errors.reduce(
+            (prev, curr) => ({ ...prev, [curr[0]]: curr[1] }),
+            {} as CreateEntryErrors,
+          ),
+        }
+      },
+      invalidatesTags: ["entries"],
+    }),
   }),
 })
 
@@ -85,4 +91,5 @@ export const {
   useGetEntriesQuery,
   useAddEntryMutation,
   useUpdateEntryMutation,
+  useDeleteEntryMutation,
 } = entriesApi

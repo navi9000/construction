@@ -1,4 +1,4 @@
-// import { useModalContext } from "@/pages/job-types/ui/modal-context"
+import { useModalContext } from "@/pages/entry-list/ui/modal-context"
 import { EditOutlined } from "@ant-design/icons"
 import { Button } from "antd"
 import { FC } from "react"
@@ -8,13 +8,12 @@ interface Props {
 }
 
 const EditButton: FC<Props> = ({ id }) => {
-  //   const {
-  //     update: { open },
-  //   } = useModalContext()
+  const {
+    update: { open },
+  } = useModalContext()
 
   return (
-    // <Button onClick={() => open(id)}>
-    <Button>
+    <Button onClick={() => open(id)}>
       <EditOutlined />
     </Button>
   )

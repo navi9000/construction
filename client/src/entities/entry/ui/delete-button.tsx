@@ -1,20 +1,26 @@
-// import { useModalContext } from "@/pages/job-types/ui/modal-context"
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons"
+import { DeleteOutlined } from "@ant-design/icons"
 import { Button } from "antd"
 import { FC } from "react"
+import { useDeleteEntryMutation } from "../api/entries-api"
 
 interface Props {
   id: number
 }
 
 const DeleteButton: FC<Props> = ({ id }) => {
-  //   const {
-  //     update: { open },
-  //   } = useModalContext()
+  const [deleteEntry] = useDeleteEntryMutation()
+
+  const onClick = async () => {
+    try {
+      const { error } = await deleteEntry(id)
+      if (error) {
+        alert("Не удалось удалить запись")
+      }
+    } catch {}
+  }
 
   return (
-    // <Button onClick={() => open(id)}>
-    <Button>
+    <Button onClick={onClick}>
       <DeleteOutlined />
     </Button>
   )

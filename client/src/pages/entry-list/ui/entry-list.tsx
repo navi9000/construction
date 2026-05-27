@@ -1,36 +1,64 @@
 import { Button, DatePicker, Flex, Table, Typography } from "antd"
 import ru from "antd/es/date-picker/locale/ru_RU"
-import { type FC } from "react"
+import { useState, type FC } from "react"
 import CreateModal from "./create-modal"
 import { useModal } from "@/widgets/modal"
 import { useTableData } from "../api/use-table-data"
 import { columns } from "@/entities/entry"
+import { ModalContextProvider } from "./modal-context"
+import UpdateModal from "./update-modal"
 
 const EntryList: FC = () => {
-  const [isOpen, openModal, closeModal] = useModal()
+  const [isCreateModalOpen, openCreateModal, closeCreateModal] = useModal()
   const { data, pagination, isError, isLoading } = useTableData()
+  const [selectedId, setSelectedId] = useState<number | null>(null)
+
+  const openUpdateModal = (id: number) => {
+    setSelectedId(id)
+  }
+
+  const closeUpdateModal = () => {
+    setSelectedId(null)
+  }
+
+  const isUpdateModalOpen = selectedId !== null
 
   return (
-    <main>
-      <Typography.Title>Список записей</Typography.Title>
-      <Flex justify="space-between">
-        <DatePicker locale={ru} />
-        <Button onClick={openModal}>Новая запись</Button>
-      </Flex>
-      <br />
-      {isLoading && <Typography.Text>Загрузка...</Typography.Text>}
-      {isError && <Typography.Text>Ошибка</Typography.Text>}
-      {!isLoading && !isError && (
-        <>
-          <Table
-            dataSource={data?.entryList}
-            columns={columns}
-            pagination={pagination}
-          />
-          <CreateModal isOpen={isOpen} close={closeModal} />
-        </>
-      )}
-    </main>
+    <ModalContextProvider
+      update={{
+        isOpen: isUpdateModalOpen,
+        open: openUpdateModal,
+        close: closeUpdateModal,
+      }}
+    >
+      <main>
+        <Typography.Title>Список записей</Typography.Title>
+        <Flex justify="space-between">
+          <DatePicker locale={ru} />
+          <Button onClick={openCreateModal}>Новая запись</Button>
+        </Flex>
+        <br />
+        {isLoading && <Typography.Text>Загрузка...</Typography.Text>}
+        {isError && <Typography.Text>Ошибка</Typography.Text>}
+        {!isLoading && !isError && (
+          <>
+            <Table
+              dataSource={data?.entryList}
+              columns={columns}
+              pagination={pagination}
+            />
+            <CreateModal isOpen={isCreateModalOpen} close={closeCreateModal} />
+            {isUpdateModalOpen && (
+              <UpdateModal
+                isOpen={selectedId !== null}
+                close={closeUpdateModal}
+                entry={data?.entryList.find((item) => item.id === selectedId)!}
+              />
+            )}
+          </>
+        )}
+      </main>
+    </ModalContextProvider>
   )
 }
 
