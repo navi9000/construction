@@ -76,11 +76,26 @@ router.get(
       .optional()
       .isInt({ min: 1 })
       .escape(),
+    query("date", "Неверный формат даты").optional().isString().escape(),
+    query("order").optional().isString().escape(),
   ]),
   async (req, res) => {
     const page = Number(req.query.page ?? 1)
     const limit = 10
     const offset = (page - 1) * limit
+
+    const dateOrder = req.query.order
+
+    let field = "id"
+    let order = "DESC"
+    if (dateOrder === "ASC" || dateOrder === "DESC") {
+      field = "date"
+      order = dateOrder
+    }
+
+    const date = req.query.date
+
+    console.log({ page, date })
 
     try {
       const { count, rows } = await Entry.findAndCountAll({
@@ -94,7 +109,13 @@ router.get(
         ],
         limit,
         offset,
-        order: [["id", "DESC"]],
+        order: [[field, order]],
+        where:
+          typeof date === "string"
+            ? {
+                date,
+              }
+            : {},
       })
 
       return res.json({

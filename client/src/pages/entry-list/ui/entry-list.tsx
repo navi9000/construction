@@ -7,10 +7,20 @@ import { useTableData } from "../api/use-table-data"
 import { columns } from "@/entities/entry"
 import { ModalContextProvider } from "./modal-context"
 import UpdateModal from "./update-modal"
+import dayjs from "dayjs"
 
 const EntryList: FC = () => {
   const [isCreateModalOpen, openCreateModal, closeCreateModal] = useModal()
-  const { data, pagination, isError, isLoading } = useTableData()
+  const {
+    data,
+    pagination,
+    isError,
+    isLoading,
+    date,
+    setDate,
+    setOrder,
+    sortButtonLabel,
+  } = useTableData()
   const [selectedId, setSelectedId] = useState<number | null>(null)
 
   const openUpdateModal = (id: number) => {
@@ -34,7 +44,14 @@ const EntryList: FC = () => {
       <main>
         <Typography.Title>Список записей</Typography.Title>
         <Flex justify="space-between">
-          <DatePicker locale={ru} />
+          <Flex gap="small">
+            <DatePicker
+              locale={ru}
+              value={date ? dayjs(date) : null}
+              onChange={setDate}
+            />
+            <Button onClick={setOrder}>{sortButtonLabel}</Button>
+          </Flex>
           <Button onClick={openCreateModal}>Новая запись</Button>
         </Flex>
         <br />

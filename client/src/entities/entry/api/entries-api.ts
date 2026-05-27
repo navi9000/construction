@@ -9,6 +9,7 @@ import {
   CreateEntryParams,
   EntryServerModel,
   EntryTableEntry,
+  GetEntriesParams,
   GetEntriesResponse,
   UpdateEntryParams,
 } from "../model/schema"
@@ -20,9 +21,10 @@ export const entriesApi = createApi({
   }),
   tagTypes: ["entries"],
   endpoints: (builder) => ({
-    getEntries: builder.query<GetEntriesResponse, {}>({
-      query: () => ({
+    getEntries: builder.query<GetEntriesResponse, GetEntriesParams>({
+      query: (params) => ({
         url: "",
+        params,
       }),
       transformResponse: (
         response: SuccessfulApiResponseWithMeta<EntryServerModel[]>,

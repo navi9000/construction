@@ -34,6 +34,12 @@ export interface EntryTableEntry {
   worker_name: string
 }
 
+export type GetEntriesParams = Partial<{
+  page: string
+  date: string
+  order: string
+}>
+
 export interface GetEntriesResponse {
   entryList: EntryTableEntry[]
   meta: ApiMeta
