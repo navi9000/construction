@@ -41,7 +41,6 @@ const getUpdateEntryErrors = (
 }
 
 const UpdateModal: FC<TableModalProps> = ({ isOpen, close, entry }) => {
-  console.log({ entry })
   const { data: jobsData } = useGetJobsQuery({})
   const [updateEntry, { isLoading, error }] = useUpdateEntryMutation()
 

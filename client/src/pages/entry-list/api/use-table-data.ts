@@ -18,7 +18,6 @@ export function useTableData() {
   if (order) {
     params.order = order
   }
-  console.log({ params })
   const { data, isLoading, isError } = useGetEntriesQuery(params)
 
   const sortButtonLabel =

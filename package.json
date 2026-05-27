@@ -6,9 +6,11 @@
   "scripts": {
     "install:all": "pnpm install",
     "dev:client": "pnpm --filter construction-client dev",
-    "build:client": "pnpm --filter construction-client build",
-    "preview:client": "pnpm --filter construction-client preview",
     "dev:server": "pnpm --filter construction-server dev",
+    "build:client": "pnpm --filter construction-client build",
+    "build:server": "pnpm --filter construction-server build",
+    "build": "pnpm build:server && pnpm build:client",
+    "start:client": "pnpm --filter construction-client start",
     "start:server": "pnpm --filter construction-server start"
   }
 }

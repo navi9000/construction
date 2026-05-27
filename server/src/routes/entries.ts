@@ -95,8 +95,6 @@ router.get(
 
     const date = req.query.date
 
-    console.log({ page, date })
-
     try {
       const { count, rows } = await Entry.findAndCountAll({
         attributes: ["id", "date", "amount", "worker_name"],
