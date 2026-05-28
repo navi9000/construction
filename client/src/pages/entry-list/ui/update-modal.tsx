@@ -18,6 +18,7 @@ import {
   type CreateEntryErrors,
   type EntryTableEntry,
 } from "@/entities/entry"
+import { FormErrorMessage } from "@/shared/ui"
 
 interface TableModalProps {
   isOpen: boolean
@@ -156,11 +157,7 @@ const UpdateModal: FC<TableModalProps> = ({ isOpen, close, entry }) => {
               value={date}
               onChange={(date) => setDate(date)}
             />
-            {updateEntryErrors?.date && (
-              <Typography.Text type="danger">
-                {updateEntryErrors.date}
-              </Typography.Text>
-            )}
+            <FormErrorMessage message={updateEntryErrors?.date} />
           </Flex>
         </Form.Item>
         <Form.Item label="Вид работ">
@@ -170,11 +167,7 @@ const UpdateModal: FC<TableModalProps> = ({ isOpen, close, entry }) => {
             onChange={onChangeJobType}
             notFoundContent={<div>Не найдено</div>}
           />
-          {updateEntryErrors?.job_id && (
-            <Typography.Text type="danger">
-              {updateEntryErrors.job_id}
-            </Typography.Text>
-          )}
+          <FormErrorMessage message={updateEntryErrors?.job_id} />
         </Form.Item>
         <Form.Item label="Объем">
           <Space.Compact style={{ width: "100%" }}>
@@ -187,16 +180,8 @@ const UpdateModal: FC<TableModalProps> = ({ isOpen, close, entry }) => {
             />
           </Space.Compact>
           <Flex vertical>
-            {updateEntryErrors?.unit_id && (
-              <Typography.Text type="danger">
-                {updateEntryErrors.unit_id}
-              </Typography.Text>
-            )}
-            {updateEntryErrors?.amount && (
-              <Typography.Text type="danger">
-                {updateEntryErrors.amount}
-              </Typography.Text>
-            )}
+            <FormErrorMessage message={updateEntryErrors?.unit_id} />
+            <FormErrorMessage message={updateEntryErrors?.amount} />
           </Flex>
         </Form.Item>
         <Form.Item label="ФИО">
@@ -204,11 +189,7 @@ const UpdateModal: FC<TableModalProps> = ({ isOpen, close, entry }) => {
             value={workerName}
             onChange={(e) => setWorkerName(e.target.value)}
           />
-          {updateEntryErrors?.worker_name && (
-            <Typography.Text type="danger">
-              {updateEntryErrors.worker_name}
-            </Typography.Text>
-          )}
+          <FormErrorMessage message={updateEntryErrors?.worker_name} />
         </Form.Item>
       </Form>
     </Modal>

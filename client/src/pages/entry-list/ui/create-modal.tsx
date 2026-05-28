@@ -1,19 +1,11 @@
-import {
-  Modal,
-  Input,
-  Form,
-  DatePicker,
-  Space,
-  Select,
-  Typography,
-  Flex,
-} from "antd"
+import { Modal, Input, Form, DatePicker, Space, Select, Flex } from "antd"
 import { ChangeEventHandler, FC, useState } from "react"
 import { Dayjs } from "dayjs"
 import { useGetJobsQuery } from "@/entities/job"
 import { GetJobsResponse } from "@/entities/job/model/schema"
 import { useAddEntryMutation } from "@/entities/entry"
 import { CreateEntryErrors } from "@/entities/entry/model/schema"
+import { FormErrorMessage } from "@/shared/ui"
 
 interface TableModalProps {
   isOpen: boolean
@@ -129,11 +121,7 @@ const CreateModal: FC<TableModalProps> = ({ isOpen, close }) => {
               value={date}
               onChange={(date) => setDate(date)}
             />
-            {addEntryErrors?.date && (
-              <Typography.Text type="danger">
-                {addEntryErrors.date}
-              </Typography.Text>
-            )}
+            <FormErrorMessage message={addEntryErrors?.date} />
           </Flex>
         </Form.Item>
         <Form.Item label="Вид работ">
@@ -143,11 +131,7 @@ const CreateModal: FC<TableModalProps> = ({ isOpen, close }) => {
             onChange={onChangeJobType}
             notFoundContent={<div>Не найдено</div>}
           />
-          {addEntryErrors?.job_id && (
-            <Typography.Text type="danger">
-              {addEntryErrors.job_id}
-            </Typography.Text>
-          )}
+          <FormErrorMessage message={addEntryErrors?.job_id} />
         </Form.Item>
         <Form.Item label="Объем">
           <Space.Compact style={{ width: "100%" }}>
@@ -160,16 +144,8 @@ const CreateModal: FC<TableModalProps> = ({ isOpen, close }) => {
             />
           </Space.Compact>
           <Flex vertical>
-            {addEntryErrors?.unit_id && (
-              <Typography.Text type="danger">
-                {addEntryErrors.unit_id}
-              </Typography.Text>
-            )}
-            {addEntryErrors?.amount && (
-              <Typography.Text type="danger">
-                {addEntryErrors.amount}
-              </Typography.Text>
-            )}
+            <FormErrorMessage message={addEntryErrors?.unit_id} />
+            <FormErrorMessage message={addEntryErrors?.amount} />
           </Flex>
         </Form.Item>
         <Form.Item label="ФИО">
@@ -177,11 +153,7 @@ const CreateModal: FC<TableModalProps> = ({ isOpen, close }) => {
             value={workerName}
             onChange={(e) => setWorkerName(e.target.value)}
           />
-          {addEntryErrors?.worker_name && (
-            <Typography.Text type="danger">
-              {addEntryErrors.worker_name}
-            </Typography.Text>
-          )}
+          <FormErrorMessage message={addEntryErrors?.worker_name} />
         </Form.Item>
       </Form>
     </Modal>

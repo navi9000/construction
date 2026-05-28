@@ -4,6 +4,7 @@ import {
   useGetUnitsQuery,
   type UnitOption,
 } from "@/entities/unit"
+import { FormErrorMessage } from "@/shared/ui"
 import { Modal, Input, Form, Select, Button, Typography } from "antd"
 import { FC, MouseEventHandler, useState } from "react"
 
@@ -95,9 +96,7 @@ const CreateModal: FC<TableModalProps> = ({ isOpen, close }) => {
       <Form>
         <Form.Item label="Вид работ">
           <Input value={name} onChange={(e) => setName(e.target.value)} />
-          {addJobErrors?.name && (
-            <Typography.Text type="danger">{addJobErrors.name}</Typography.Text>
-          )}
+          <FormErrorMessage message={addJobErrors?.name} />
         </Form.Item>
         <Form.Item label="Единица измерения">
           <Select
@@ -138,11 +137,7 @@ const CreateModal: FC<TableModalProps> = ({ isOpen, close }) => {
             }}
             notFoundContent={<div>Не найдено</div>}
           />
-          {addJobErrors?.unit_ids && (
-            <Typography.Text type="danger">
-              {addJobErrors.unit_ids}
-            </Typography.Text>
-          )}
+          <FormErrorMessage message={addJobErrors?.unit_ids} />
         </Form.Item>
       </Form>
     </Modal>
