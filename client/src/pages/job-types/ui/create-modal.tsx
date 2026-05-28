@@ -5,7 +5,7 @@ import {
   type UnitOption,
 } from "@/entities/unit"
 import { FormErrorMessage } from "@/shared/ui"
-import { Modal, Input, Form, Select, Button, Typography } from "antd"
+import { Modal, Input, Form, Select, Button } from "antd"
 import { FC, MouseEventHandler, useState } from "react"
 
 interface TableModalProps {
@@ -22,7 +22,7 @@ const getCreateJobErrors = (error: unknown): CreateJobErrors | undefined => {
 }
 
 const CreateModal: FC<TableModalProps> = ({ isOpen, close }) => {
-  const { data } = useGetUnitsQuery({})
+  const { data } = useGetUnitsQuery()
   const [addUnit, { isLoading: isAddingUnit }] = useAddUnitMutation()
   const [addJob, { isLoading: isAddingJob, error: addJobError }] =
     useAddJobMutation()
@@ -60,7 +60,7 @@ const CreateModal: FC<TableModalProps> = ({ isOpen, close }) => {
     setUnitSearch("")
   }
 
-  const onSubmit: MouseEventHandler = async (e) => {
+  const onSubmit: MouseEventHandler = async () => {
     try {
       const { error } = await addJob({
         name,
@@ -72,7 +72,9 @@ const CreateModal: FC<TableModalProps> = ({ isOpen, close }) => {
         setSelectedUnits([])
         close()
       }
-    } catch {}
+    } catch (err) {
+      console.log({ err })
+    }
   }
 
   const onCancel = () => {

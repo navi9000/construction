@@ -1,12 +1,15 @@
-import { JobTableEntry, type CreateJobErrors } from "@/entities/job"
-import { useUpdateJobMutation } from "@/entities/job/api/jobs-api"
+import {
+  JobTableEntry,
+  type CreateJobErrors,
+  useUpdateJobMutation,
+} from "@/entities/job"
 import {
   useAddUnitMutation,
   useGetUnitsQuery,
   type UnitOption,
 } from "@/entities/unit"
 import { FormErrorMessage } from "@/shared/ui"
-import { Modal, Input, Form, Select, Button, Typography } from "antd"
+import { Modal, Input, Form, Select, Button } from "antd"
 import { FC, MouseEventHandler, useState } from "react"
 
 interface TableModalProps {
@@ -24,7 +27,7 @@ const getUpdateJobErrors = (error: unknown): CreateJobErrors | undefined => {
 }
 
 const UpdateModal: FC<TableModalProps> = ({ isOpen, close, job }) => {
-  const { data } = useGetUnitsQuery({})
+  const { data } = useGetUnitsQuery()
   const [addUnit, { isLoading: isAddingUnit }] = useAddUnitMutation()
   const [updateJob, { isLoading: isUpdatingJob, error: updateJobError }] =
     useUpdateJobMutation()
@@ -66,7 +69,7 @@ const UpdateModal: FC<TableModalProps> = ({ isOpen, close, job }) => {
     setUnitSearch("")
   }
 
-  const onSubmit: MouseEventHandler = async (e) => {
+  const onSubmit: MouseEventHandler = async () => {
     try {
       const { error } = await updateJob({
         id: job.id,
@@ -77,7 +80,9 @@ const UpdateModal: FC<TableModalProps> = ({ isOpen, close, job }) => {
       if (!error) {
         close()
       }
-    } catch {}
+    } catch (err) {
+      console.log({ err })
+    }
   }
 
   const onCancel = () => {

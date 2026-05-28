@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import {
   SuccessfulApiResponse,
   SuccessfulApiResponseWithMeta,
-} from "@/shared/api/model/schema"
+} from "@/shared/api"
 import {
   CreateUnitParams,
   GetUnitsResponse,
@@ -16,7 +16,7 @@ export const unitsApi = createApi({
   }),
   tagTypes: ["units"],
   endpoints: (builder) => ({
-    getUnits: builder.query<GetUnitsResponse, {}>({
+    getUnits: builder.query<GetUnitsResponse, void>({
       query: () => ({
         url: "",
       }),
@@ -43,7 +43,7 @@ export const unitsApi = createApi({
       async onQueryStarted({ name }, { dispatch, queryFulfilled, requestId }) {
         const optimisticValue = `optimistic-${requestId}`
         const patchResult = dispatch(
-          unitsApi.util.updateQueryData("getUnits", {}, (draft) => {
+          unitsApi.util.updateQueryData("getUnits", undefined, (draft) => {
             const alreadyExists = draft.optionList.some(
               (unit) => unit.label.toLowerCase() === name.toLowerCase(),
             )
@@ -61,7 +61,7 @@ export const unitsApi = createApi({
           const { data } = await queryFulfilled
 
           dispatch(
-            unitsApi.util.updateQueryData("getUnits", {}, (draft) => {
+            unitsApi.util.updateQueryData("getUnits", undefined, (draft) => {
               const optimisticUnit = draft.optionList.find(
                 (unit) => unit.value === optimisticValue,
               )

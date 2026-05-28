@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import {
   SuccessfulApiResponseWithMeta,
   UnsuccessfulApiResponse,
-} from "@/shared/api/model/schema"
+} from "@/shared/api"
 import {
   CreateEntryErrorResponse,
   CreateEntryErrors,

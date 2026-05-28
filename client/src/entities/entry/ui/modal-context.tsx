@@ -1,4 +1,4 @@
-import { createContext, FC, PropsWithChildren, use } from "react"
+import { createContext, use } from "react"
 
 export interface ModalContextValues {
   create?: {
@@ -23,10 +23,4 @@ export function useModalContext() {
   }
 
   return context
-}
-
-export const ModalContextProvider: FC<
-  PropsWithChildren<ModalContextValues>
-> = ({ children, ...value }) => {
-  return <ModalContext.Provider value={value}>{children}</ModalContext.Provider>
 }

@@ -3,9 +3,16 @@ import { useState, type FC } from "react"
 import CreateModal from "./create-modal"
 import { useModal } from "@/widgets/modal"
 import { useTableData } from "../api/use-table-data"
-import { columns } from "@/entities/job"
-import { ModalContextProvider } from "./modal-context"
+import { columns, JobTableEntry, ModalContextProvider } from "@/entities/job"
 import UpdateModal from "./update-modal"
+
+const emptyJob: JobTableEntry = {
+  id: -1,
+  key: "",
+  name: "",
+  units: [],
+  unitsStringified: "",
+}
 
 const JobTypes: FC = () => {
   const [isCreateModalOpen, openCreateModal, closeCreateModal] = useModal()
@@ -51,7 +58,10 @@ const JobTypes: FC = () => {
               <UpdateModal
                 isOpen={selectedId !== null}
                 close={closeUpdateModal}
-                job={data?.jobList.find((item) => item.id === selectedId)!}
+                job={
+                  data?.jobList.find((item) => item.id === selectedId) ??
+                  emptyJob
+                }
               />
             )}
           </>

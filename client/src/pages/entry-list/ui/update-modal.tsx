@@ -1,19 +1,8 @@
-import {
-  Modal,
-  Input,
-  Form,
-  DatePicker,
-  Space,
-  Select,
-  Typography,
-  Flex,
-} from "antd"
-import { ChangeEventHandler, FC, useEffect, useState } from "react"
+import { Modal, Input, Form, DatePicker, Space, Select, Flex } from "antd"
+import { ChangeEventHandler, FC, useState } from "react"
 import dayjs, { Dayjs } from "dayjs"
-import { useGetJobsQuery } from "@/entities/job"
-import { GetJobsResponse } from "@/entities/job/model/schema"
+import { useGetJobsQuery, type GetJobsResponse } from "@/entities/job"
 import {
-  useAddEntryMutation,
   useUpdateEntryMutation,
   type CreateEntryErrors,
   type EntryTableEntry,
@@ -26,11 +15,6 @@ interface TableModalProps {
   entry: EntryTableEntry
 }
 
-interface Option {
-  label: string
-  value: string
-}
-
 const getUpdateEntryErrors = (
   error: unknown,
 ): CreateEntryErrors | undefined => {
@@ -41,37 +25,38 @@ const getUpdateEntryErrors = (
   return error.errors as CreateEntryErrors
 }
 
+const getUnitList = (
+  jobsData: GetJobsResponse | undefined,
+  jobType: string,
+) => {
+  if (!jobsData) {
+    return
+  }
+  const job = jobsData.jobList.find((job) => job.key === jobType)
+  if (!job) {
+    return
+  }
+  const unitList = job.units
+  if (!unitList) {
+    return
+  }
+
+  return unitList.map((unit) => ({
+    label: unit.name,
+    value: unit.id.toString(),
+  }))
+}
+
 const UpdateModal: FC<TableModalProps> = ({ isOpen, close, entry }) => {
-  const { data: jobsData } = useGetJobsQuery({})
+  const { data: jobsData } = useGetJobsQuery()
   const [updateEntry, { isLoading, error }] = useUpdateEntryMutation()
 
   const [date, setDate] = useState<Dayjs | null>(dayjs(entry.date))
   const [jobType, setJobType] = useState(entry.job.id.toString())
   const [amount, setAmount] = useState(entry.amount.toString())
-  const [unitList, setUnitList] = useState<Option[]>([])
   const [unitType, setUnitType] = useState(entry.unit.id.toString())
   const [workerName, setWorkerName] = useState(entry.worker_name)
-
-  useEffect(() => {
-    if (!jobsData) {
-      return
-    }
-    const job = jobsData.jobList.find((job) => job.key === jobType)
-    if (!job) {
-      return
-    }
-    const unitList = job.units
-    if (!unitList) {
-      return
-    }
-
-    setUnitList(
-      unitList.map((unit) => ({
-        label: unit.name,
-        value: unit.id.toString(),
-      })),
-    )
-  }, [jobsData, jobType])
+  const unitList = getUnitList(jobsData, jobType)
 
   const updateEntryErrors = getUpdateEntryErrors(error)
 
@@ -105,14 +90,8 @@ const UpdateModal: FC<TableModalProps> = ({ isOpen, close, entry }) => {
     if (!job) {
       return
     }
-    const unitList = job.units
-    if (!unitList) {
-      return
-    }
     setJobType(job.key)
-    setUnitList(
-      unitList.map((unit) => ({ label: unit.name, value: unit.id.toString() })),
-    )
+    setUnitType("")
   }
 
   const onSubmit = async () => {
@@ -128,7 +107,9 @@ const UpdateModal: FC<TableModalProps> = ({ isOpen, close, entry }) => {
       if (!response.error) {
         close()
       }
-    } catch {}
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   const onCancel = () => {

@@ -8,11 +8,7 @@ import {
   JobTableEntry,
   UpdateJobParams,
 } from "../model/schema"
-import {
-  SuccessfulApiResponse,
-  SuccessfulApiResponseWithMeta,
-  UnsuccessfulApiResponse,
-} from "@/shared/api/model/schema"
+import { SuccessfulApiResponse, UnsuccessfulApiResponse } from "@/shared/api"
 
 export const jobsApi = createApi({
   reducerPath: "jobs",
@@ -21,7 +17,7 @@ export const jobsApi = createApi({
   }),
   tagTypes: ["jobs"],
   endpoints: (builder) => ({
-    getJobs: builder.query<GetJobsResponse, {}>({
+    getJobs: builder.query<GetJobsResponse, void>({
       query: () => ({
         url: "",
       }),

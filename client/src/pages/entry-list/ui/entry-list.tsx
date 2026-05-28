@@ -4,10 +4,32 @@ import { useState, type FC } from "react"
 import CreateModal from "./create-modal"
 import { useModal } from "@/widgets/modal"
 import { useTableData } from "../api/use-table-data"
-import { columns } from "@/entities/entry"
-import { ModalContextProvider } from "./modal-context"
+import {
+  columns,
+  EntryTableEntry,
+  ModalContextProvider,
+} from "@/entities/entry"
 import UpdateModal from "./update-modal"
 import dayjs from "dayjs"
+
+const emptyEntry: EntryTableEntry = {
+  id: -1,
+  key: "",
+  date: "",
+  job: {
+    id: -1,
+    name: "",
+    units: [],
+  },
+  jobStringified: "",
+  amount: 0,
+  unit: {
+    id: -1,
+    name: "",
+  },
+  unitStringified: "",
+  worker_name: "",
+}
 
 const EntryList: FC = () => {
   const [isCreateModalOpen, openCreateModal, closeCreateModal] = useModal()
@@ -69,7 +91,10 @@ const EntryList: FC = () => {
               <UpdateModal
                 isOpen={selectedId !== null}
                 close={closeUpdateModal}
-                entry={data?.entryList.find((item) => item.id === selectedId)!}
+                entry={
+                  data?.entryList.find((item) => item.id === selectedId) ??
+                  emptyEntry
+                }
               />
             )}
           </>

@@ -1,5 +1,4 @@
-import { useGetEntriesQuery } from "@/entities/entry"
-import { GetEntriesParams } from "@/entities/entry/model/schema"
+import { useGetEntriesQuery, type GetEntriesParams } from "@/entities/entry"
 import { Dayjs } from "dayjs"
 import { useSearchParams } from "react-router"
 

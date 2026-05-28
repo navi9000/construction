@@ -1,6 +1,8 @@
 import ItemButtons from "./ui/item-buttons"
+import ModalContextProvider from "./ui/modal-context-provider"
 
 export { ItemButtons }
+export { ModalContextProvider }
 export {
   entriesApi,
   useGetEntriesQuery,
@@ -12,4 +14,5 @@ export {
   columns,
   type EntryTableEntry,
   type CreateEntryErrors,
+  type GetEntriesParams,
 } from "./model/schema"

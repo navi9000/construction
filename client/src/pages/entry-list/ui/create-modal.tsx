@@ -1,10 +1,8 @@
 import { Modal, Input, Form, DatePicker, Space, Select, Flex } from "antd"
 import { ChangeEventHandler, FC, useState } from "react"
 import { Dayjs } from "dayjs"
-import { useGetJobsQuery } from "@/entities/job"
-import { GetJobsResponse } from "@/entities/job/model/schema"
-import { useAddEntryMutation } from "@/entities/entry"
-import { CreateEntryErrors } from "@/entities/entry/model/schema"
+import { useGetJobsQuery, type GetJobsResponse } from "@/entities/job"
+import { useAddEntryMutation, type CreateEntryErrors } from "@/entities/entry"
 import { FormErrorMessage } from "@/shared/ui"
 
 interface TableModalProps {
@@ -28,7 +26,7 @@ const getCreateEntryErrors = (
 }
 
 const CreateModal: FC<TableModalProps> = ({ isOpen, close }) => {
-  const { data: jobsData } = useGetJobsQuery({})
+  const { data: jobsData } = useGetJobsQuery()
   const [addEntry, { isLoading, error }] = useAddEntryMutation()
 
   const [date, setDate] = useState<Dayjs | null>(null)
@@ -92,7 +90,9 @@ const CreateModal: FC<TableModalProps> = ({ isOpen, close }) => {
       if (!response.error) {
         close()
       }
-    } catch {}
+    } catch (err) {
+      console.log({ err })
+    }
   }
 
   const onCancel = () => {

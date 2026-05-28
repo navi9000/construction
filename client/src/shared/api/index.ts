@@ -3,4 +3,7 @@ export type {
   ApiErrorMessage,
   ApiResponse,
   ApiResponseWithMeta,
+  SuccessfulApiResponse,
+  SuccessfulApiResponseWithMeta,
+  UnsuccessfulApiResponse,
 } from "./model/schema"

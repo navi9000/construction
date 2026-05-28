@@ -1,4 +1,4 @@
-import { useModalContext } from "@/pages/job-types/ui/modal-context"
+import { useModalContext } from "./modal-context"
 import { EditOutlined } from "@ant-design/icons"
 import { Button } from "antd"
 import { FC } from "react"

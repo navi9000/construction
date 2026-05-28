@@ -1,6 +1,5 @@
 import { TableColumnsType } from "antd"
 import ItemButtons from "../ui/item-buttons"
-import { ApiMeta } from "@/shared/api"
 
 export interface UnitServerModel {
   id: number

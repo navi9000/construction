@@ -16,7 +16,9 @@ const DeleteButton: FC<Props> = ({ id }) => {
       if (error) {
         alert("Не удалось удалить запись")
       }
-    } catch {}
+    } catch (err) {
+      console.log({ err })
+    }
   }
 
   return (
