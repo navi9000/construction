@@ -70,18 +70,14 @@ const UpdateModal: FC<TableModalProps> = ({ isOpen, close, job }) => {
   }
 
   const onSubmit: MouseEventHandler = async () => {
-    try {
-      const { error } = await updateJob({
-        id: job.id,
-        name,
-        unit_ids: selectedUnits.map((unit) => Number(unit.value)),
-      })
+    const { error } = await updateJob({
+      id: job.id,
+      name,
+      unit_ids: selectedUnits.map((unit) => Number(unit.value)),
+    })
 
-      if (!error) {
-        close()
-      }
-    } catch (err) {
-      console.log({ err })
+    if (!error) {
+      close()
     }
   }
 

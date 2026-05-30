@@ -61,19 +61,15 @@ const CreateModal: FC<TableModalProps> = ({ isOpen, close }) => {
   }
 
   const onSubmit: MouseEventHandler = async () => {
-    try {
-      const { error } = await addJob({
-        name,
-        unit_ids: selectedUnits.map((unit) => Number(unit.value)),
-      })
+    const { error } = await addJob({
+      name,
+      unit_ids: selectedUnits.map((unit) => Number(unit.value)),
+    })
 
-      if (!error) {
-        setName("")
-        setSelectedUnits([])
-        close()
-      }
-    } catch (err) {
-      console.log({ err })
+    if (!error) {
+      setName("")
+      setSelectedUnits([])
+      close()
     }
   }
 

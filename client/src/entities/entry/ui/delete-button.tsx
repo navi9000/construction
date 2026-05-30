@@ -1,5 +1,5 @@
 import { DeleteOutlined } from "@ant-design/icons"
-import { Button } from "antd"
+import { Button, notification } from "antd"
 import { FC } from "react"
 import { useDeleteEntryMutation } from "../api/entries-api"
 
@@ -11,13 +11,12 @@ const DeleteButton: FC<Props> = ({ id }) => {
   const [deleteEntry] = useDeleteEntryMutation()
 
   const onClick = async () => {
-    try {
-      const { error } = await deleteEntry(id)
-      if (error) {
-        alert("Не удалось удалить запись")
-      }
-    } catch (err) {
-      console.log({ err })
+    const { error } = await deleteEntry(id)
+    if (error) {
+      notification.error({
+        title: "Ошибка",
+        description: "Не удалось удалить запись",
+      })
     }
   }
 

@@ -79,19 +79,16 @@ const CreateModal: FC<TableModalProps> = ({ isOpen, close }) => {
   }
 
   const onSubmit = async () => {
-    try {
-      const response = await addEntry({
-        date: date?.format("YYYY-MM-DD") ?? "",
-        unit_id: unitType ? Number(unitType) : -1,
-        job_id: jobType ? Number(jobType) : -1,
-        worker_name: workerName,
-        amount: Number(amount),
-      })
-      if (!response.error) {
-        close()
-      }
-    } catch (err) {
-      console.log({ err })
+    const { error } = await addEntry({
+      date: date?.format("YYYY-MM-DD") ?? "",
+      unit_id: unitType ? Number(unitType) : -1,
+      job_id: jobType ? Number(jobType) : -1,
+      worker_name: workerName,
+      amount: Number(amount),
+    })
+
+    if (!error) {
+      close()
     }
   }
 
