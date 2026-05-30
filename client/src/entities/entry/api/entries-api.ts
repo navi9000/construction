@@ -20,6 +20,7 @@ export const entriesApi = createApi({
     baseUrl: "http://localhost:3000" + "/entries",
   }),
   tagTypes: ["entries"],
+  keepUnusedDataFor: 1800,
   endpoints: (builder) => ({
     getEntries: builder.query<GetEntriesResponse, GetEntriesParams>({
       query: (params) => ({

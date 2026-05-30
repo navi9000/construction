@@ -15,6 +15,7 @@ export const unitsApi = createApi({
     baseUrl: "http://localhost:3000" + "/units",
   }),
   tagTypes: ["units"],
+  keepUnusedDataFor: 1800,
   endpoints: (builder) => ({
     getUnits: builder.query<GetUnitsResponse, void>({
       query: () => ({

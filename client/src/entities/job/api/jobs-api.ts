@@ -16,6 +16,7 @@ export const jobsApi = createApi({
     baseUrl: "http://localhost:3000" + "/jobs",
   }),
   tagTypes: ["jobs"],
+  keepUnusedDataFor: 1800,
   endpoints: (builder) => ({
     getJobs: builder.query<GetJobsResponse, void>({
       query: () => ({
