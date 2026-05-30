@@ -1,14 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import {
-  CreateJobErrorResponse,
-  CreateJobErrors,
   CreateJobParams,
   GetJobsResponse,
   JobServerModel,
   JobTableEntry,
   UpdateJobParams,
 } from "../model/schema"
-import { SuccessfulApiResponse, UnsuccessfulApiResponse } from "@/shared/api"
+import { SuccessfulApiResponse, transformErrorResponse } from "@/shared/api"
 
 export const jobsApi = createApi({
   reducerPath: "jobs",
@@ -43,14 +41,7 @@ export const jobsApi = createApi({
           unit_ids,
         },
       }),
-      transformErrorResponse: (response): CreateJobErrorResponse => {
-        return {
-          errors: (response.data as UnsuccessfulApiResponse).errors.reduce(
-            (prev, curr) => ({ ...prev, [curr[0]]: curr[1] }),
-            {} as CreateJobErrors,
-          ),
-        }
-      },
+      transformErrorResponse,
       invalidatesTags: ["jobs"],
     }),
     updateJob: builder.mutation<JobTableEntry, UpdateJobParams>({
@@ -59,14 +50,7 @@ export const jobsApi = createApi({
         method: "PUT",
         body,
       }),
-      transformErrorResponse: (response): CreateJobErrorResponse => {
-        return {
-          errors: (response.data as UnsuccessfulApiResponse).errors.reduce(
-            (prev, curr) => ({ ...prev, [curr[0]]: curr[1] }),
-            {} as CreateJobErrors,
-          ),
-        }
-      },
+      transformErrorResponse,
       invalidatesTags: ["jobs"],
     }),
   }),

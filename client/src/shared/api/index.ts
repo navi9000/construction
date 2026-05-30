@@ -6,4 +6,6 @@ export type {
   SuccessfulApiResponse,
   SuccessfulApiResponseWithMeta,
   UnsuccessfulApiResponse,
-} from "./model/schema"
+} from "./schema"
+
+export { transformErrorResponse } from "./transform-error-response"

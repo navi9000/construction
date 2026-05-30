@@ -1,11 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import {
   SuccessfulApiResponseWithMeta,
-  UnsuccessfulApiResponse,
+  transformErrorResponse,
 } from "@/shared/api"
 import {
-  CreateEntryErrorResponse,
-  CreateEntryErrors,
   CreateEntryParams,
   EntryServerModel,
   EntryTableEntry,
@@ -46,14 +44,7 @@ export const entriesApi = createApi({
         method: "POST",
         body,
       }),
-      transformErrorResponse: (response): CreateEntryErrorResponse => {
-        return {
-          errors: (response.data as UnsuccessfulApiResponse).errors.reduce(
-            (prev, curr) => ({ ...prev, [curr[0]]: curr[1] }),
-            {} as CreateEntryErrors,
-          ),
-        }
-      },
+      transformErrorResponse,
       invalidatesTags: ["entries"],
     }),
     updateEntry: builder.mutation<EntryTableEntry, UpdateEntryParams>({
@@ -62,14 +53,7 @@ export const entriesApi = createApi({
         method: "PUT",
         body,
       }),
-      transformErrorResponse: (response): CreateEntryErrorResponse => {
-        return {
-          errors: (response.data as UnsuccessfulApiResponse).errors.reduce(
-            (prev, curr) => ({ ...prev, [curr[0]]: curr[1] }),
-            {} as CreateEntryErrors,
-          ),
-        }
-      },
+      transformErrorResponse,
       invalidatesTags: ["entries"],
     }),
     deleteEntry: builder.mutation<EntryTableEntry, number>({
@@ -77,14 +61,7 @@ export const entriesApi = createApi({
         url: `/${id}`,
         method: "DELETE",
       }),
-      transformErrorResponse: (response): CreateEntryErrorResponse => {
-        return {
-          errors: (response.data as UnsuccessfulApiResponse).errors.reduce(
-            (prev, curr) => ({ ...prev, [curr[0]]: curr[1] }),
-            {} as CreateEntryErrors,
-          ),
-        }
-      },
+      transformErrorResponse,
       invalidatesTags: ["entries"],
     }),
   }),
