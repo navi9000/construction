@@ -1,5 +1,5 @@
 import { Modal, Input, Form, DatePicker, Space, Select, Flex } from "antd"
-import { ChangeEventHandler, FC, useState } from "react"
+import { ChangeEventHandler, FC, useEffect, useState } from "react"
 import dayjs, { Dayjs } from "dayjs"
 import { useGetJobsQuery, type GetJobsResponse } from "@/entities/job"
 import {
@@ -57,6 +57,14 @@ const UpdateModal: FC<TableModalProps> = ({ isOpen, close, entry }) => {
   const [unitType, setUnitType] = useState(entry.unit.id.toString())
   const [workerName, setWorkerName] = useState(entry.worker_name)
   const unitList = getUnitList(jobsData, jobType)
+
+  useEffect(() => {
+    setDate(dayjs(entry.date))
+    setJobType(entry.job.id.toString())
+    setAmount(entry.amount.toString())
+    setUnitType(entry.unit.id.toString())
+    setWorkerName(entry.worker_name)
+  }, [entry])
 
   const updateEntryErrors = getUpdateEntryErrors(error)
 

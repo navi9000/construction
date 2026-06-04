@@ -1,7 +1,7 @@
 import { Button, Flex, Table, Typography } from "antd"
-import { useState, type FC } from "react"
+import type { FC } from "react"
 import CreateModal from "./create-modal"
-import { useModal } from "@/widgets/modal"
+import { useCreateModal, useUpdateModal } from "@/widgets/modal"
 import { useTableData } from "../api/use-table-data"
 import { columns, JobTableEntry, ModalContextProvider } from "@/entities/job"
 import UpdateModal from "./update-modal"
@@ -15,20 +15,12 @@ const emptyJob: JobTableEntry = {
 }
 
 const JobTypes: FC = () => {
-  const [isCreateModalOpen, openCreateModal, closeCreateModal] = useModal()
   const { data, isLoading, isError } = useTableData()
 
-  const [selectedId, setSelectedId] = useState<number | null>(null)
-
-  const openUpdateModal = (id: number) => {
-    setSelectedId(id)
-  }
-
-  const closeUpdateModal = () => {
-    setSelectedId(null)
-  }
-
-  const isUpdateModalOpen = selectedId !== null
+  const [isCreateModalOpen, openCreateModal, closeCreateModal] =
+    useCreateModal()
+  const { isUpdateModalOpen, openUpdateModal, closeUpdateModal, selectedItem } =
+    useUpdateModal(data?.jobList)
 
   return (
     <ModalContextProvider
@@ -54,16 +46,11 @@ const JobTypes: FC = () => {
               pagination={false}
             />
             <CreateModal isOpen={isCreateModalOpen} close={closeCreateModal} />
-            {isUpdateModalOpen && (
-              <UpdateModal
-                isOpen={selectedId !== null}
-                close={closeUpdateModal}
-                job={
-                  data?.jobList.find((item) => item.id === selectedId) ??
-                  emptyJob
-                }
-              />
-            )}
+            <UpdateModal
+              isOpen={isUpdateModalOpen}
+              close={closeUpdateModal}
+              job={selectedItem ?? emptyJob}
+            />
           </>
         )}
       </main>

@@ -1,8 +1,7 @@
 import { Button, DatePicker, Flex, Table, Typography } from "antd"
 import ru from "antd/es/date-picker/locale/ru_RU"
-import { useState, type FC } from "react"
 import CreateModal from "./create-modal"
-import { useModal } from "@/widgets/modal"
+import { useCreateModal, useUpdateModal } from "@/widgets/modal"
 import { useTableData } from "../api/use-table-data"
 import {
   columns,
@@ -11,6 +10,7 @@ import {
 } from "@/entities/entry"
 import UpdateModal from "./update-modal"
 import dayjs from "dayjs"
+import type { FC } from "react"
 
 const emptyEntry: EntryTableEntry = {
   id: -1,
@@ -32,7 +32,6 @@ const emptyEntry: EntryTableEntry = {
 }
 
 const EntryList: FC = () => {
-  const [isCreateModalOpen, openCreateModal, closeCreateModal] = useModal()
   const {
     data,
     pagination,
@@ -43,17 +42,11 @@ const EntryList: FC = () => {
     setOrder,
     sortButtonLabel,
   } = useTableData()
-  const [selectedId, setSelectedId] = useState<number | null>(null)
 
-  const openUpdateModal = (id: number) => {
-    setSelectedId(id)
-  }
-
-  const closeUpdateModal = () => {
-    setSelectedId(null)
-  }
-
-  const isUpdateModalOpen = selectedId !== null
+  const [isCreateModalOpen, openCreateModal, closeCreateModal] =
+    useCreateModal()
+  const { isUpdateModalOpen, openUpdateModal, closeUpdateModal, selectedItem } =
+    useUpdateModal(data?.entryList)
 
   return (
     <ModalContextProvider
@@ -87,16 +80,11 @@ const EntryList: FC = () => {
               pagination={pagination}
             />
             <CreateModal isOpen={isCreateModalOpen} close={closeCreateModal} />
-            {isUpdateModalOpen && (
-              <UpdateModal
-                isOpen={selectedId !== null}
-                close={closeUpdateModal}
-                entry={
-                  data?.entryList.find((item) => item.id === selectedId) ??
-                  emptyEntry
-                }
-              />
-            )}
+            <UpdateModal
+              isOpen={isUpdateModalOpen}
+              close={closeUpdateModal}
+              entry={selectedItem ?? emptyEntry}
+            />
           </>
         )}
       </main>

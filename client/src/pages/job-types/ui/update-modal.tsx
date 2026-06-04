@@ -10,7 +10,7 @@ import {
 } from "@/entities/unit"
 import { FormErrorMessage } from "@/shared/ui"
 import { Modal, Input, Form, Select, Button } from "antd"
-import { FC, MouseEventHandler, useState } from "react"
+import { FC, MouseEventHandler, useEffect, useState } from "react"
 
 interface TableModalProps {
   isOpen: boolean
@@ -39,6 +39,15 @@ const UpdateModal: FC<TableModalProps> = ({ isOpen, close, job }) => {
   )
   const [unitSearch, setUnitSearch] = useState("")
   const updateJobErrors = getUpdateJobErrors(updateJobError)
+
+  useEffect(() => {
+    setName(job.name)
+    setSelectedUnits(
+      (data?.optionList ?? []).filter((option) =>
+        job.units.map((unit) => unit.id.toString()).includes(option.value),
+      ),
+    )
+  }, [job, data])
 
   const newUnitName = unitSearch.trim()
   const hasMatchingUnit = data?.optionList.some(
