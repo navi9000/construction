@@ -58,8 +58,7 @@ export const entriesApi = createApi({
     }),
     deleteEntry: builder.mutation<EntryTableEntry, number>({
       query: (id) => ({
-        // url: `/${id}`,
-        url: "/111",
+        url: `/${id}`,
         method: "DELETE",
       }),
       transformErrorResponse,
