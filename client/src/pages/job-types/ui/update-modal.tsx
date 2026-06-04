@@ -31,6 +31,7 @@ const UpdateModal: FC<TableModalProps> = ({ isOpen, close, job }) => {
   const [addUnit, { isLoading: isAddingUnit }] = useAddUnitMutation()
   const [updateJob, { isLoading: isUpdatingJob, error: updateJobError }] =
     useUpdateJobMutation()
+  const [jobId, setJobId] = useState(job.id)
   const [name, setName] = useState(job.name)
   const [selectedUnits, setSelectedUnits] = useState<UnitOption[]>(
     (data?.optionList ?? []).filter((option) =>
@@ -40,14 +41,19 @@ const UpdateModal: FC<TableModalProps> = ({ isOpen, close, job }) => {
   const [unitSearch, setUnitSearch] = useState("")
   const updateJobErrors = getUpdateJobErrors(updateJobError)
 
+  console.log({ selectedUnits })
+
   useEffect(() => {
-    setName(job.name)
-    setSelectedUnits(
-      (data?.optionList ?? []).filter((option) =>
-        job.units.map((unit) => unit.id.toString()).includes(option.value),
-      ),
-    )
-  }, [job, data])
+    if (jobId !== job.id) {
+      setJobId(job.id)
+      setName(job.name)
+      setSelectedUnits(
+        (data?.optionList ?? []).filter((option) =>
+          job.units.map((unit) => unit.id.toString()).includes(option.value),
+        ),
+      )
+    }
+  }, [jobId, job, data])
 
   const newUnitName = unitSearch.trim()
   const hasMatchingUnit = data?.optionList.some(
@@ -82,8 +88,19 @@ const UpdateModal: FC<TableModalProps> = ({ isOpen, close, job }) => {
     const { error } = await updateJob({
       id: job.id,
       name,
-      unit_ids: selectedUnits.map((unit) => Number(unit.value)),
+      units: {
+        added: selectedUnits
+          .map((unit) => Number(unit.value))
+          .filter((id) => !job.units.map((unit) => unit.id).includes(id)),
+        removed: job.units
+          .map((unit) => unit.id)
+          .filter(
+            (id) =>
+              !selectedUnits.map((unit) => Number(unit.value)).includes(id),
+          ),
+      },
     })
+    console.log({ name, selectedUnits })
 
     if (!error) {
       close()
@@ -130,22 +147,14 @@ const UpdateModal: FC<TableModalProps> = ({ isOpen, close, job }) => {
                 <>
                   {menu}
                   {canAddUnit && (
-                    <div
-                      style={{ padding: "8px" }}
-                      onMouseDown={(event) => {
-                        event.preventDefault()
-                        event.stopPropagation()
-                      }}
+                    <Button
+                      block
+                      type="text"
+                      loading={isAddingUnit}
+                      onClick={handleAddUnit}
                     >
-                      <Button
-                        block
-                        type="text"
-                        loading={isAddingUnit}
-                        onClick={handleAddUnit}
-                      >
-                        Добавить "{newUnitName}"
-                      </Button>
-                    </div>
+                      Добавить "{newUnitName}"
+                    </Button>
                   )}
                 </>
               )

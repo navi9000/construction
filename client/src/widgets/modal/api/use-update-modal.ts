@@ -14,7 +14,6 @@ export function useUpdateModal<T extends { id: number }>(list?: T[]) {
   const isUpdateModalOpen = selectedItem !== null
 
   const getSelectedItem = (id: number) => {
-    console.log({ list, id })
     return list?.find((item) => item.id === id) ?? null
   }
 

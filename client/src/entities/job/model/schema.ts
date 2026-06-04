@@ -29,7 +29,15 @@ export interface CreateJobParams {
   unit_ids: number[]
 }
 
-export type UpdateJobParams = { id: number } & Partial<CreateJobParams>
+export type UpdateJobParams = {
+  id: number
+} & Partial<{
+  name: string
+  units: {
+    added: number[]
+    removed: number[]
+  }
+}>
 
 export type CreateJobErrors = Partial<Record<keyof CreateJobParams, string>>
 

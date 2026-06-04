@@ -113,22 +113,14 @@ const CreateModal: FC<TableModalProps> = ({ isOpen, close }) => {
                 <>
                   {menu}
                   {canAddUnit && (
-                    <div
-                      style={{ padding: "8px" }}
-                      onMouseDown={(event) => {
-                        event.preventDefault()
-                        event.stopPropagation()
-                      }}
+                    <Button
+                      block
+                      type="text"
+                      loading={isAddingUnit}
+                      onClick={handleAddUnit}
                     >
-                      <Button
-                        block
-                        type="text"
-                        loading={isAddingUnit}
-                        onClick={handleAddUnit}
-                      >
-                        Добавить "{newUnitName}"
-                      </Button>
-                    </div>
+                      Добавить "{newUnitName}"
+                    </Button>
                   )}
                 </>
               )
