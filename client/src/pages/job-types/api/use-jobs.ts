@@ -1,11 +1,11 @@
 import { useGetJobsQuery } from "@/entities/job"
 
-export function useTableData() {
+export function useJobs() {
   const { data, isLoading, isError } = useGetJobsQuery()
 
   return {
-    data,
     isLoading,
     isError,
+    jobList: data?.jobList,
   }
 }

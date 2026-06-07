@@ -1,22 +1,21 @@
 import { Button, Flex, Table, Typography } from "antd"
-import type { FC } from "react"
-import CreateModal from "./create-modal"
+import { type FC } from "react"
 import {
   ModalContextProvider,
   useCreateModal,
   useUpdateModal,
 } from "@/widgets/modal"
-import { useTableData } from "../api/use-table-data"
 import { columns } from "@/entities/job"
+import CreateModal from "./create-modal"
 import UpdateModal from "./update-modal"
+import { useJobs } from "../api/use-jobs"
 
 const JobTypes: FC = () => {
-  const { data, isLoading, isError } = useTableData()
-
+  const { jobList, isLoading, isError } = useJobs()
   const [isCreateModalOpen, openCreateModal, closeCreateModal] =
     useCreateModal()
   const { isUpdateModalOpen, openUpdateModal, closeUpdateModal, selectedItem } =
-    useUpdateModal(data?.jobList)
+    useUpdateModal(jobList)
 
   return (
     <ModalContextProvider open={openUpdateModal}>
@@ -30,11 +29,7 @@ const JobTypes: FC = () => {
         {isError && <Typography.Text>Ошибка</Typography.Text>}
         {!isLoading && !isError && (
           <>
-            <Table
-              dataSource={data?.jobList}
-              columns={columns}
-              pagination={false}
-            />
+            <Table dataSource={jobList} columns={columns} pagination={false} />
             <CreateModal isOpen={isCreateModalOpen} close={closeCreateModal} />
             <UpdateModal
               isOpen={isUpdateModalOpen}
