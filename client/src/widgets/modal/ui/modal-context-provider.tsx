@@ -1,5 +1,5 @@
 import { FC, PropsWithChildren } from "react"
-import { ModalContext, ModalContextValues } from "./modal-context"
+import { ModalContext, ModalContextValues } from "../model/modal-context"
 
 const ModalContextProvider: FC<PropsWithChildren<ModalContextValues>> = ({
   children,

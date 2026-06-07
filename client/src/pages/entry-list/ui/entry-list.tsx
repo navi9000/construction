@@ -1,13 +1,13 @@
 import { Button, DatePicker, Flex, Table, Typography } from "antd"
 import ru from "antd/es/date-picker/locale/ru_RU"
 import CreateModal from "./create-modal"
-import { useCreateModal, useUpdateModal } from "@/widgets/modal"
-import { useTableData } from "../api/use-table-data"
 import {
-  columns,
-  EntryTableEntry,
   ModalContextProvider,
-} from "@/entities/entry"
+  useCreateModal,
+  useUpdateModal,
+} from "@/widgets/modal"
+import { useTableData } from "../api/use-table-data"
+import { columns, EntryTableEntry } from "@/entities/entry"
 import UpdateModal from "./update-modal"
 import dayjs from "dayjs"
 import type { FC } from "react"
@@ -49,13 +49,7 @@ const EntryList: FC = () => {
     useUpdateModal(data?.entryList)
 
   return (
-    <ModalContextProvider
-      update={{
-        isOpen: isUpdateModalOpen,
-        open: openUpdateModal,
-        close: closeUpdateModal,
-      }}
-    >
+    <ModalContextProvider open={openUpdateModal}>
       <main>
         <Typography.Title>Список записей</Typography.Title>
         <Flex justify="space-between">

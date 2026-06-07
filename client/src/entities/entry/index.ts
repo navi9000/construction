@@ -1,8 +1,6 @@
 import ItemButtons from "./ui/item-buttons"
-import ModalContextProvider from "./ui/modal-context-provider"
 
 export { ItemButtons }
-export { ModalContextProvider }
 export {
   entriesApi,
   useGetEntriesQuery,

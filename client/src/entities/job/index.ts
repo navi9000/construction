@@ -1,7 +1,3 @@
-import ModalContextProvider from "./ui/modal-context-provider"
-
-export { ModalContextProvider }
-
 export {
   columns,
   type CreateJobErrors,

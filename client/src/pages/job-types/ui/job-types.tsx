@@ -1,9 +1,13 @@
 import { Button, Flex, Table, Typography } from "antd"
 import type { FC } from "react"
 import CreateModal from "./create-modal"
-import { useCreateModal, useUpdateModal } from "@/widgets/modal"
+import {
+  ModalContextProvider,
+  useCreateModal,
+  useUpdateModal,
+} from "@/widgets/modal"
 import { useTableData } from "../api/use-table-data"
-import { columns, JobTableEntry, ModalContextProvider } from "@/entities/job"
+import { columns, JobTableEntry } from "@/entities/job"
 import UpdateModal from "./update-modal"
 
 const emptyJob: JobTableEntry = {
@@ -23,13 +27,7 @@ const JobTypes: FC = () => {
     useUpdateModal(data?.jobList)
 
   return (
-    <ModalContextProvider
-      update={{
-        isOpen: isUpdateModalOpen,
-        open: openUpdateModal,
-        close: closeUpdateModal,
-      }}
-    >
+    <ModalContextProvider open={openUpdateModal}>
       <main>
         <Typography.Title>Виды работ</Typography.Title>
         <Flex justify="end">
