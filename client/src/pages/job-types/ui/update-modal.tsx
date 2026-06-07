@@ -3,19 +3,16 @@ import {
   type CreateJobErrors,
   useUpdateJobMutation,
 } from "@/entities/job"
-import {
-  useAddUnitMutation,
-  useGetUnitsQuery,
-  type UnitOption,
-} from "@/entities/unit"
+import { useAddUnitMutation, useGetUnitsQuery } from "@/entities/unit"
 import { FormErrorMessage } from "@/shared/ui"
+import { diff } from "@/shared/utils/arrays"
 import { Modal, Input, Form, Select, Button } from "antd"
-import { FC, MouseEventHandler, useEffect, useState } from "react"
+import { FC, MouseEventHandler, useState } from "react"
 
 interface TableModalProps {
   isOpen: boolean
   close: () => void
-  job: JobTableEntry
+  job: JobTableEntry | null
 }
 
 const getUpdateJobErrors = (error: unknown): CreateJobErrors | undefined => {
@@ -26,34 +23,36 @@ const getUpdateJobErrors = (error: unknown): CreateJobErrors | undefined => {
   return error.errors as CreateJobErrors
 }
 
+type JobFormData = {
+  id: number
+  name: string
+  unitIds: string[]
+}
+
+const getJobFormValues = (job: JobTableEntry): JobFormData => ({
+  name: job.name,
+  unitIds: job.units.map((unit) => unit.id.toString()),
+  id: job.id,
+})
+
+const initialState: JobFormData = {
+  name: "",
+  unitIds: [],
+  id: -1,
+}
+
 const UpdateModal: FC<TableModalProps> = ({ isOpen, close, job }) => {
   const { data } = useGetUnitsQuery()
   const [addUnit, { isLoading: isAddingUnit }] = useAddUnitMutation()
   const [updateJob, { isLoading: isUpdatingJob, error: updateJobError }] =
     useUpdateJobMutation()
-  const [jobId, setJobId] = useState(job.id)
-  const [name, setName] = useState(job.name)
-  const [selectedUnits, setSelectedUnits] = useState<UnitOption[]>(
-    (data?.optionList ?? []).filter((option) =>
-      job.units.map((unit) => unit.id.toString()).includes(option.value),
-    ),
-  )
+  const [formValues, setFormValues] = useState(initialState)
   const [unitSearch, setUnitSearch] = useState("")
   const updateJobErrors = getUpdateJobErrors(updateJobError)
 
-  console.log({ selectedUnits })
-
-  useEffect(() => {
-    if (jobId !== job.id) {
-      setJobId(job.id)
-      setName(job.name)
-      setSelectedUnits(
-        (data?.optionList ?? []).filter((option) =>
-          job.units.map((unit) => unit.id.toString()).includes(option.value),
-        ),
-      )
-    }
-  }, [jobId, job, data])
+  if (job && formValues.id !== job?.id) {
+    setFormValues(getJobFormValues(job))
+  }
 
   const newUnitName = unitSearch.trim()
   const hasMatchingUnit = data?.optionList.some(
@@ -72,35 +71,36 @@ const UpdateModal: FC<TableModalProps> = ({ isOpen, close, job }) => {
       value: createdUnit.id.toString(),
     }
 
-    setSelectedUnits((currentUnits) => {
-      const alreadySelected = currentUnits.some(
-        (unit) => unit.value === createdUnitOption.value,
+    setFormValues((currentValues) => {
+      const alreadySelected = currentValues.unitIds.some(
+        (unitId) => unitId === createdUnitOption.value,
       )
 
-      return alreadySelected
-        ? currentUnits
-        : [...currentUnits, createdUnitOption]
+      return {
+        ...currentValues,
+        unitIds: alreadySelected
+          ? currentValues.unitIds
+          : [...currentValues.unitIds, createdUnitOption.value],
+      }
     })
     setUnitSearch("")
   }
 
   const onSubmit: MouseEventHandler = async () => {
+    if (!job) {
+      return
+    }
+    const currUnits = formValues.unitIds.map(Number)
+    const prevUnits = job.units.map((unit) => unit.id)
+    const { added, removed } = diff(currUnits, prevUnits)
     const { error } = await updateJob({
       id: job.id,
-      name,
+      name: formValues.name,
       units: {
-        added: selectedUnits
-          .map((unit) => Number(unit.value))
-          .filter((id) => !job.units.map((unit) => unit.id).includes(id)),
-        removed: job.units
-          .map((unit) => unit.id)
-          .filter(
-            (id) =>
-              !selectedUnits.map((unit) => Number(unit.value)).includes(id),
-          ),
+        added,
+        removed,
       },
     })
-    console.log({ name, selectedUnits })
 
     if (!error) {
       close()
@@ -127,12 +127,19 @@ const UpdateModal: FC<TableModalProps> = ({ isOpen, close, job }) => {
     >
       <Form>
         <Form.Item label="Вид работ">
-          <Input value={name} onChange={(e) => setName(e.target.value)} />
+          <Input
+            value={formValues.name}
+            onChange={(e) =>
+              setFormValues((currentValues) => ({
+                ...currentValues,
+                name: e.target.value,
+              }))
+            }
+          />
           <FormErrorMessage message={updateJobErrors?.name} />
         </Form.Item>
         <Form.Item label="Единица измерения">
           <Select
-            labelInValue
             showSearch={{
               searchValue: unitSearch,
               onSearch: setUnitSearch,
@@ -140,8 +147,13 @@ const UpdateModal: FC<TableModalProps> = ({ isOpen, close, job }) => {
             }}
             options={data.optionList}
             mode="multiple"
-            value={selectedUnits}
-            onChange={setSelectedUnits}
+            value={formValues.unitIds}
+            onChange={(unitIds) =>
+              setFormValues((currentValues) => ({
+                ...currentValues,
+                unitIds,
+              }))
+            }
             popupRender={(menu) => {
               return (
                 <>

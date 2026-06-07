@@ -1,5 +1,5 @@
 import { Modal, Input, Form, DatePicker, Space, Select, Flex } from "antd"
-import { ChangeEventHandler, FC, useEffect, useState } from "react"
+import { ChangeEventHandler, type FC, useState } from "react"
 import dayjs, { Dayjs } from "dayjs"
 import { useGetJobsQuery, type GetJobsResponse } from "@/entities/job"
 import {
@@ -12,7 +12,7 @@ import { FormErrorMessage } from "@/shared/ui"
 interface TableModalProps {
   isOpen: boolean
   close: () => void
-  entry: EntryTableEntry
+  entry: EntryTableEntry | null
 }
 
 const getUpdateEntryErrors = (
@@ -47,24 +47,59 @@ const getUnitList = (
   }))
 }
 
+type EntryFormData = {
+  date: Dayjs | null
+  jobType: string
+  amount: string
+  unitType: string
+  workerName: string
+  id: number
+}
+
+const getEntryData = (entry: EntryTableEntry): EntryFormData => {
+  return {
+    date: dayjs(entry.date),
+    jobType: entry.job.id.toString(),
+    amount: entry.amount.toString(),
+    unitType: entry.unit.id.toString(),
+    workerName: entry.worker_name,
+    id: entry.id,
+  }
+}
+
+const initialState: EntryFormData = {
+  date: null,
+  jobType: "",
+  amount: "",
+  unitType: "",
+  workerName: "",
+  id: -1,
+}
+
 const UpdateModal: FC<TableModalProps> = ({ isOpen, close, entry }) => {
   const { data: jobsData } = useGetJobsQuery()
   const [updateEntry, { isLoading, error }] = useUpdateEntryMutation()
 
-  const [date, setDate] = useState<Dayjs | null>(dayjs(entry.date))
-  const [jobType, setJobType] = useState(entry.job.id.toString())
-  const [amount, setAmount] = useState(entry.amount.toString())
-  const [unitType, setUnitType] = useState(entry.unit.id.toString())
-  const [workerName, setWorkerName] = useState(entry.worker_name)
-  const unitList = getUnitList(jobsData, jobType)
+  // const [date, setDate] = useState<Dayjs | null>(dayjs(entry.date))
+  // const [jobType, setJobType] = useState(entry.job.id.toString())
+  // const [amount, setAmount] = useState(entry.amount.toString())
+  // const [unitType, setUnitType] = useState(entry.unit.id.toString())
+  // const [workerName, setWorkerName] = useState(entry.worker_name)
 
-  useEffect(() => {
-    setDate(dayjs(entry.date))
-    setJobType(entry.job.id.toString())
-    setAmount(entry.amount.toString())
-    setUnitType(entry.unit.id.toString())
-    setWorkerName(entry.worker_name)
-  }, [entry])
+  const [entryData, setEntryData] = useState(initialState)
+  const unitList = getUnitList(jobsData, entryData.jobType)
+
+  // useEffect(() => {
+  //   setDate(dayjs(entry.date))
+  //   setJobType(entry.job.id.toString())
+  //   setAmount(entry.amount.toString())
+  //   setUnitType(entry.unit.id.toString())
+  //   setWorkerName(entry.worker_name)
+  // }, [entry])
+
+  if (entry && entryData.id !== entry.id) {
+    setEntryData(getEntryData(entry))
+  }
 
   const updateEntryErrors = getUpdateEntryErrors(error)
 
@@ -73,7 +108,8 @@ const UpdateModal: FC<TableModalProps> = ({ isOpen, close, entry }) => {
     if (!new RegExp(/^\d*\.?\d{0,}$/).test(input)) {
       return
     }
-    setAmount(input)
+    // setAmount(input)
+    setEntryData((prev) => ({ ...prev, amount: input }))
   }
 
   const getJobOptions = (input: GetJobsResponse | undefined) => {
@@ -98,19 +134,27 @@ const UpdateModal: FC<TableModalProps> = ({ isOpen, close, entry }) => {
     if (!job) {
       return
     }
-    setJobType(job.key)
-    setUnitType("")
+    // setJobType(job.key)
+    // setUnitType("")
+    setEntryData((prev) => ({
+      ...prev,
+      jobType: job.key,
+      unitType: "",
+    }))
   }
 
   const onSubmit = async () => {
+    if (!entry) {
+      return
+    }
     try {
       const response = await updateEntry({
         id: entry.id,
-        date: date?.format("YYYY-MM-DD") ?? "",
-        unit_id: unitType ? Number(unitType) : -1,
-        job_id: jobType ? Number(jobType) : -1,
-        worker_name: workerName,
-        amount: Number(amount),
+        date: entryData.date?.format("YYYY-MM-DD") ?? "",
+        unit_id: entryData.unitType ? Number(entryData.unitType) : -1,
+        job_id: entryData.jobType ? Number(entryData.jobType) : -1,
+        worker_name: entryData.workerName,
+        amount: Number(entryData.amount),
       })
       if (!response.error) {
         close()
@@ -143,8 +187,8 @@ const UpdateModal: FC<TableModalProps> = ({ isOpen, close, entry }) => {
           <Flex vertical>
             <DatePicker
               placeholder="Выберите дату"
-              value={date}
-              onChange={(date) => setDate(date)}
+              value={entryData.date}
+              onChange={(date) => setEntryData((prev) => ({ ...prev, date }))}
             />
             <FormErrorMessage message={updateEntryErrors?.date} />
           </Flex>
@@ -152,7 +196,7 @@ const UpdateModal: FC<TableModalProps> = ({ isOpen, close, entry }) => {
         <Form.Item label="Вид работ">
           <Select
             options={getJobOptions(jobsData)}
-            value={jobType}
+            value={entryData.jobType}
             onChange={onChangeJobType}
             notFoundContent={<div>Не найдено</div>}
           />
@@ -160,11 +204,13 @@ const UpdateModal: FC<TableModalProps> = ({ isOpen, close, entry }) => {
         </Form.Item>
         <Form.Item label="Объем">
           <Space.Compact style={{ width: "100%" }}>
-            <Input value={amount} onChange={changeAmount} />
+            <Input value={entryData.amount} onChange={changeAmount} />
             <Select
               options={unitList}
-              value={unitType}
-              onChange={setUnitType}
+              value={entryData.unitType}
+              onChange={(unitType) =>
+                setEntryData((prev) => ({ ...prev, unitType }))
+              }
               notFoundContent={<div>Не найдено</div>}
             />
           </Space.Compact>
@@ -175,8 +221,10 @@ const UpdateModal: FC<TableModalProps> = ({ isOpen, close, entry }) => {
         </Form.Item>
         <Form.Item label="ФИО">
           <Input
-            value={workerName}
-            onChange={(e) => setWorkerName(e.target.value)}
+            value={entryData.workerName}
+            onChange={(e) =>
+              setEntryData((prev) => ({ ...prev, workerName: e.target.value }))
+            }
           />
           <FormErrorMessage message={updateEntryErrors?.worker_name} />
         </Form.Item>

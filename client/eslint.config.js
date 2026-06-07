@@ -67,7 +67,6 @@ export default defineConfig([
                   "@/app/*/**",
                   "@/entities/*/**",
                   "@/pages/*/**",
-                  "@/shared/*/**",
                   "@/widgets/*/**",
                 ],
               },

@@ -7,16 +7,8 @@ import {
   useUpdateModal,
 } from "@/widgets/modal"
 import { useTableData } from "../api/use-table-data"
-import { columns, JobTableEntry } from "@/entities/job"
+import { columns } from "@/entities/job"
 import UpdateModal from "./update-modal"
-
-const emptyJob: JobTableEntry = {
-  id: -1,
-  key: "",
-  name: "",
-  units: [],
-  unitsStringified: "",
-}
 
 const JobTypes: FC = () => {
   const { data, isLoading, isError } = useTableData()
@@ -47,7 +39,7 @@ const JobTypes: FC = () => {
             <UpdateModal
               isOpen={isUpdateModalOpen}
               close={closeUpdateModal}
-              job={selectedItem ?? emptyJob}
+              job={selectedItem}
             />
           </>
         )}

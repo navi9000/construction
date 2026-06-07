@@ -1,4 +1,4 @@
-import { createContext, use } from "react"
+import { createContext } from "react"
 
 export interface ModalContextValues {
   open: (id: number) => void

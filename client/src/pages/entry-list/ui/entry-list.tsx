@@ -7,29 +7,10 @@ import {
   useUpdateModal,
 } from "@/widgets/modal"
 import { useTableData } from "../api/use-table-data"
-import { columns, EntryTableEntry } from "@/entities/entry"
+import { columns } from "@/entities/entry"
 import UpdateModal from "./update-modal"
 import dayjs from "dayjs"
 import type { FC } from "react"
-
-const emptyEntry: EntryTableEntry = {
-  id: -1,
-  key: "",
-  date: "",
-  job: {
-    id: -1,
-    name: "",
-    units: [],
-  },
-  jobStringified: "",
-  amount: 0,
-  unit: {
-    id: -1,
-    name: "",
-  },
-  unitStringified: "",
-  worker_name: "",
-}
 
 const EntryList: FC = () => {
   const {
@@ -77,7 +58,7 @@ const EntryList: FC = () => {
             <UpdateModal
               isOpen={isUpdateModalOpen}
               close={closeUpdateModal}
-              entry={selectedItem ?? emptyEntry}
+              entry={selectedItem}
             />
           </>
         )}
