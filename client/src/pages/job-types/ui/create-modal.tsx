@@ -1,12 +1,8 @@
 import { useAddJobMutation, type CreateJobErrors } from "@/entities/job"
-import {
-  useAddUnitMutation,
-  useGetUnitsQuery,
-  type UnitOption,
-} from "@/entities/unit"
 import { FormErrorMessage } from "@/shared/ui"
 import { Modal, Input, Form, Select, Button } from "antd"
 import { FC, MouseEventHandler, useState } from "react"
+import { useUnits } from "./use-units"
 
 interface TableModalProps {
   isOpen: boolean
@@ -22,43 +18,23 @@ const getCreateJobErrors = (error: unknown): CreateJobErrors | undefined => {
 }
 
 const CreateModal: FC<TableModalProps> = ({ isOpen, close }) => {
-  const { data } = useGetUnitsQuery()
-  const [addUnit, { isLoading: isAddingUnit }] = useAddUnitMutation()
   const [addJob, { isLoading: isAddingJob, error: addJobError }] =
     useAddJobMutation()
   const [name, setName] = useState("")
-  const [selectedUnits, setSelectedUnits] = useState<UnitOption[]>([])
-  const [unitSearch, setUnitSearch] = useState("")
+
   const addJobErrors = getCreateJobErrors(addJobError)
 
-  const newUnitName = unitSearch.trim()
-  const hasMatchingUnit = data?.optionList.some(
-    (unit) => unit.label.toLowerCase() === newUnitName.toLowerCase(),
-  )
-  const canAddUnit = newUnitName.length > 0 && !hasMatchingUnit
-
-  const handleAddUnit = async () => {
-    if (!canAddUnit) {
-      return
-    }
-
-    const createdUnit = await addUnit({ name: newUnitName }).unwrap()
-    const createdUnitOption = {
-      label: createdUnit.name,
-      value: createdUnit.id.toString(),
-    }
-
-    setSelectedUnits((currentUnits) => {
-      const alreadySelected = currentUnits.some(
-        (unit) => unit.value === createdUnitOption.value,
-      )
-
-      return alreadySelected
-        ? currentUnits
-        : [...currentUnits, createdUnitOption]
-    })
-    setUnitSearch("")
-  }
+  const {
+    data,
+    isAddingUnit,
+    handleAddUnit,
+    canAddUnit,
+    newUnitName,
+    selectedUnits,
+    setSelectedUnits,
+    unitSearch,
+    setUnitSearch,
+  } = useUnits()
 
   const onSubmit: MouseEventHandler = async () => {
     const { error } = await addJob({
