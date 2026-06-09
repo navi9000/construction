@@ -1,28 +1,16 @@
-import { useAddJobMutation, type CreateJobErrors } from "@/entities/job"
 import { FormErrorMessage } from "@/shared/ui"
 import { Modal, Input, Form, Select, Button } from "antd"
-import { FC, MouseEventHandler, useState } from "react"
+import { FC, MouseEventHandler } from "react"
 import { useUnits } from "./use-units"
+import { useJob } from "./use-job"
 
 interface TableModalProps {
   isOpen: boolean
   close: () => void
 }
 
-const getCreateJobErrors = (error: unknown): CreateJobErrors | undefined => {
-  if (!error || typeof error !== "object" || !("errors" in error)) {
-    return undefined
-  }
-
-  return error.errors as CreateJobErrors
-}
-
 const CreateModal: FC<TableModalProps> = ({ isOpen, close }) => {
-  const [addJob, { isLoading: isAddingJob, error: addJobError }] =
-    useAddJobMutation()
-  const [name, setName] = useState("")
-
-  const addJobErrors = getCreateJobErrors(addJobError)
+  const { addJob, isAddingJob, addJobErrors, name, setName } = useJob()
 
   const {
     data,

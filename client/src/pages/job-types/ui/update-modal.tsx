@@ -1,13 +1,10 @@
-import {
-  JobTableEntry,
-  type CreateJobErrors,
-  useUpdateJobMutation,
-} from "@/entities/job"
+import { JobTableEntry } from "@/entities/job"
 import { FormErrorMessage } from "@/shared/ui"
 import { diff } from "@/shared/utils/arrays"
 import { Modal, Input, Form, Select, Button } from "antd"
-import { FC, MouseEventHandler, useState } from "react"
+import { FC, MouseEventHandler } from "react"
 import { useUnits } from "./use-units"
+import { useJob } from "./use-job"
 
 interface TableModalProps {
   isOpen: boolean
@@ -15,38 +12,10 @@ interface TableModalProps {
   job: JobTableEntry | null
 }
 
-const getUpdateJobErrors = (error: unknown): CreateJobErrors | undefined => {
-  if (!error || typeof error !== "object" || !("errors" in error)) {
-    return undefined
-  }
-
-  return error.errors as CreateJobErrors
-}
-
-type JobFormData = {
-  id: number
-  name: string
-}
-
-const getJobFormValues = (job: JobTableEntry): JobFormData => ({
-  name: job.name,
-  id: job.id,
-})
-
-const initialState: JobFormData = {
-  name: "",
-  id: -1,
-}
-
 const UpdateModal: FC<TableModalProps> = ({ isOpen, close, job }) => {
-  const [updateJob, { isLoading: isUpdatingJob, error: updateJobError }] =
-    useUpdateJobMutation()
-  const [formValues, setFormValues] = useState(initialState)
-  const updateJobErrors = getUpdateJobErrors(updateJobError)
-
-  if (job && formValues.id !== job?.id) {
-    setFormValues(getJobFormValues(job))
-  }
+  const { updateJob, isUpdatingJob, updateJobErrors, name, setName } = useJob({
+    job,
+  })
 
   const {
     data,
@@ -69,7 +38,7 @@ const UpdateModal: FC<TableModalProps> = ({ isOpen, close, job }) => {
     const { added, removed } = diff(currUnits, prevUnits)
     const { error } = await updateJob({
       id: job.id,
-      name: formValues.name,
+      name,
       units: {
         added,
         removed,
@@ -101,15 +70,7 @@ const UpdateModal: FC<TableModalProps> = ({ isOpen, close, job }) => {
     >
       <Form>
         <Form.Item label="Вид работ">
-          <Input
-            value={formValues.name}
-            onChange={(e) =>
-              setFormValues((currentValues) => ({
-                ...currentValues,
-                name: e.target.value,
-              }))
-            }
-          />
+          <Input value={name} onChange={(e) => setName(e.target.value)} />
           <FormErrorMessage message={updateJobErrors?.name} />
         </Form.Item>
         <Form.Item label="Единица измерения">
