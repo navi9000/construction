@@ -1,4 +1,4 @@
-import { TableColumnsType } from "antd"
+import type { ColumnsType } from "antd/es/table"
 import ItemButtons from "../ui/item-buttons"
 
 export interface UnitServerModel {
@@ -45,7 +45,7 @@ export interface CreateJobErrorResponse {
   errors: CreateJobErrors
 }
 
-export const columns: TableColumnsType<JobTableEntry> = [
+export const columns: ColumnsType<JobTableEntry> = [
   {
     title: "Вид работ",
     dataIndex: "name",

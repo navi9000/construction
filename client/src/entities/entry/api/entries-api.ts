@@ -1,9 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import {
-  SuccessfulApiResponseWithMeta,
   transformErrorResponse,
+  type SuccessfulApiResponseWithMeta,
 } from "@/shared/api"
-import {
+import type {
   CreateEntryParams,
   EntryServerModel,
   EntryTableEntry,

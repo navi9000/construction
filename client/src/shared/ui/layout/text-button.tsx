@@ -1,5 +1,5 @@
 import type { CSSProperties, FC, ReactNode } from "react"
-import { Typography } from "antd"
+import Typography from "antd/es/typography"
 import { useLocation, Link } from "react-router"
 
 interface TextButtonProps {

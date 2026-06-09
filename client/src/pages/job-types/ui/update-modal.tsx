@@ -1,5 +1,5 @@
 import { JobTableEntry } from "@/entities/job"
-import { Modal } from "antd"
+import Modal from "antd/es/modal"
 import { FC, MouseEventHandler, useState } from "react"
 import observer from "@/shared/modules/observer"
 import ModalForm from "./modal-form"

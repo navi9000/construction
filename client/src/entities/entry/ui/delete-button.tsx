@@ -1,5 +1,6 @@
 import { DeleteOutlined } from "@ant-design/icons"
-import { Button, notification } from "antd"
+import Button from "antd/es/button"
+import notification from "antd/es/notification"
 import { FC } from "react"
 import { useDeleteEntryMutation } from "../api/entries-api"
 

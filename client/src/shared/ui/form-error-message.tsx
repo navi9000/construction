@@ -1,4 +1,4 @@
-import { Typography } from "antd"
+import Typography from "antd/es/typography"
 import { FC } from "react"
 
 interface Props {

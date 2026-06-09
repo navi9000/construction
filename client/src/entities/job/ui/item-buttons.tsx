@@ -1,4 +1,4 @@
-import { Flex } from "antd"
+import Flex from "antd/es/flex"
 import { ReactNode } from "react"
 import { JobTableEntry } from "../model/schema"
 import EditButton from "./edit-button"

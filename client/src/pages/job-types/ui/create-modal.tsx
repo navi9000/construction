@@ -1,4 +1,4 @@
-import { Modal } from "antd"
+import Modal from "antd/es/modal"
 import { FC, MouseEventHandler, useState } from "react"
 import ModalForm from "./modal-form"
 import observer from "@/shared/modules/observer"

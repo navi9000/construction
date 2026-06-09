@@ -1,4 +1,8 @@
-import { Button, DatePicker, Flex, Table, Typography } from "antd"
+import Button from "antd/es/button"
+import DatePicker from "antd/es/date-picker"
+import Flex from "antd/es/flex"
+import Table from "antd/es/table"
+import Typography from "antd/es/typography"
 import ru from "antd/es/date-picker/locale/ru_RU"
 import CreateModal from "./create-modal"
 import {

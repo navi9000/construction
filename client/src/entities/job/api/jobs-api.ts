@@ -1,12 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
-import {
+import type {
   CreateJobParams,
   GetJobsResponse,
   JobServerModel,
   JobTableEntry,
   UpdateJobParams,
 } from "../model/schema"
-import { SuccessfulApiResponse, transformErrorResponse } from "@/shared/api"
+import { transformErrorResponse, type SuccessfulApiResponse } from "@/shared/api"
 
 export const jobsApi = createApi({
   reducerPath: "jobs",

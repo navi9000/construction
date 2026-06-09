@@ -1,4 +1,7 @@
-import { Button, Flex, Table, Typography } from "antd"
+import Button from "antd/es/button"
+import Flex from "antd/es/flex"
+import Table from "antd/es/table"
+import Typography from "antd/es/typography"
 import { type FC } from "react"
 import {
   ModalContextProvider,

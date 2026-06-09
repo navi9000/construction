@@ -1,4 +1,4 @@
-import { TableColumnsType } from "antd"
+import type { ColumnsType } from "antd/es/table"
 import ItemButtons from "../ui/item-buttons"
 import { ApiMeta } from "@/shared/api"
 
@@ -61,7 +61,7 @@ export interface CreateEntryErrorResponse {
   errors: CreateEntryErrors
 }
 
-export const columns: TableColumnsType<EntryTableEntry> = [
+export const columns: ColumnsType<EntryTableEntry> = [
   {
     title: "Дата",
     dataIndex: "date",

@@ -1,6 +1,9 @@
 import { type JobTableEntry } from "@/entities/job"
 import { FormErrorMessage } from "@/shared/ui"
-import { Button, Form, Input, Select } from "antd"
+import Button from "antd/es/button"
+import Form from "antd/es/form"
+import Input from "antd/es/input"
+import Select from "antd/es/select"
 import { useCallback, type FC } from "react"
 import { useJob } from "./use-job"
 import { useUnits } from "./use-units"
@@ -85,7 +88,7 @@ const ModalForm: FC<Props> = ({ job = null, close }) => {
         close()
       }
     },
-    [job, selectedUnits],
+    [job, name, selectedUnits],
   )
 
   useObserver(handleCreateJob)

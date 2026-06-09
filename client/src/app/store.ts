@@ -1,7 +1,7 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit"
-import { jobsApi } from "@/entities/job"
-import { unitsApi } from "@/entities/unit"
-import { entriesApi } from "@/entities/entry"
+import { jobsApi } from "@/entities/job/api/jobs-api"
+import { unitsApi } from "@/entities/unit/api/units-api"
+import { entriesApi } from "@/entities/entry/api/entries-api"
 
 const reducer = combineReducers({
   [jobsApi.reducerPath]: jobsApi.reducer,
