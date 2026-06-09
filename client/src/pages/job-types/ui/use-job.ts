@@ -19,11 +19,8 @@ const getErrors = (error: unknown): CreateJobErrors | undefined => {
 }
 
 export function useJob({ job }: UseJobParams = { job: null }) {
-  const [addJob, { isLoading: isAddingJob, error: addJobError }] =
-    useAddJobMutation()
-
-  const [updateJob, { isLoading: isUpdatingJob, error: updateJobError }] =
-    useUpdateJobMutation()
+  const [addJob, { error: addJobError }] = useAddJobMutation()
+  const [updateJob, { error: updateJobError }] = useUpdateJobMutation()
   const [name, setName] = useState("")
   const [jobId, setJobId] = useState<number | null>(null)
 
@@ -37,21 +34,19 @@ export function useJob({ job }: UseJobParams = { job: null }) {
     setName("")
   }
 
-  const addJobErrors = useMemo(() => {
-    return getErrors(addJobError)
-  }, [addJobError])
-
-  const updateJobErrors = useMemo(() => {
-    return getErrors(updateJobError)
-  }, [updateJobError])
+  const jobErrors = useMemo(() => {
+    if (addJobError) {
+      return getErrors(addJobError)
+    }
+    if (updateJobError) {
+      return getErrors(updateJobError)
+    }
+  }, [addJobError, updateJobError])
 
   return {
     addJob,
-    isAddingJob,
-    addJobErrors,
     updateJob,
-    isUpdatingJob,
-    updateJobErrors,
+    jobErrors,
     name,
     setName,
   }

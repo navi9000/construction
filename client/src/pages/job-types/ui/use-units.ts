@@ -67,7 +67,7 @@ export function useUnits({ job }: UseUnitsParams = { job: null }) {
   }
 
   return {
-    data,
+    optionList: data ? data.optionList : [],
     isAddingUnit,
     handleAddUnit,
     canAddUnit,
