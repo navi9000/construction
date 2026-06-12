@@ -8,7 +8,7 @@ import { useCallback, type FC } from "react"
 import { useJob } from "./use-job"
 import { useUnits } from "./use-units"
 import { diff } from "@/shared/utils/arrays"
-import { useObserver } from "@/shared/modules/use-observer"
+import { useObserver } from "@/shared/utils/observer"
 
 interface Props {
   job?: JobTableEntry | null

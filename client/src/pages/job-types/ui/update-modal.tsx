@@ -1,8 +1,8 @@
-import { JobTableEntry } from "@/entities/job"
+import type { JobTableEntry } from "@/entities/job"
 import Modal from "antd/es/modal"
-import { FC, MouseEventHandler, useState } from "react"
-import observer from "@/shared/modules/observer"
+import { type FC, type MouseEventHandler, useState } from "react"
 import ModalForm from "./modal-form"
+import observer from "@/shared/utils/observer"
 
 interface TableModalProps {
   isOpen: boolean

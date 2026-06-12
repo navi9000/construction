@@ -1,3 +1,5 @@
+import { useEffect } from "react"
+
 class Observer {
   #savedCallbacks
 
@@ -20,4 +22,16 @@ class Observer {
   }
 }
 
-export default new Observer()
+const observer = new Observer()
+
+export function useObserver(callback: Function) {
+  useEffect(() => {
+    observer.add(callback)
+
+    return () => {
+      observer.remove(callback)
+    }
+  }, [callback])
+}
+
+export default observer
