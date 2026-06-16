@@ -1,16 +1,22 @@
-import { Button, DatePicker, Flex, Table, Typography } from "antd"
+import Button from "antd/es/button"
+import DatePicker from "antd/es/date-picker"
+import Flex from "antd/es/flex"
+import Table from "antd/es/table"
+import Typography from "antd/es/typography"
 import ru from "antd/es/date-picker/locale/ru_RU"
-import { useState, type FC } from "react"
 import CreateModal from "./create-modal"
-import { useModal } from "@/widgets/modal"
+import {
+  ModalContextProvider,
+  useCreateModal,
+  useUpdateModal,
+} from "@/widgets/modal"
 import { useTableData } from "../api/use-table-data"
 import { columns } from "@/entities/entry"
-import { ModalContextProvider } from "./modal-context"
 import UpdateModal from "./update-modal"
 import dayjs from "dayjs"
+import type { FC } from "react"
 
 const EntryList: FC = () => {
-  const [isCreateModalOpen, openCreateModal, closeCreateModal] = useModal()
   const {
     data,
     pagination,
@@ -21,26 +27,14 @@ const EntryList: FC = () => {
     setOrder,
     sortButtonLabel,
   } = useTableData()
-  const [selectedId, setSelectedId] = useState<number | null>(null)
 
-  const openUpdateModal = (id: number) => {
-    setSelectedId(id)
-  }
-
-  const closeUpdateModal = () => {
-    setSelectedId(null)
-  }
-
-  const isUpdateModalOpen = selectedId !== null
+  const [isCreateModalOpen, openCreateModal, closeCreateModal] =
+    useCreateModal()
+  const { isUpdateModalOpen, openUpdateModal, closeUpdateModal, selectedItem } =
+    useUpdateModal(data?.entryList)
 
   return (
-    <ModalContextProvider
-      update={{
-        isOpen: isUpdateModalOpen,
-        open: openUpdateModal,
-        close: closeUpdateModal,
-      }}
-    >
+    <ModalContextProvider open={openUpdateModal}>
       <main>
         <Typography.Title>Список записей</Typography.Title>
         <Flex justify="space-between">
@@ -65,13 +59,11 @@ const EntryList: FC = () => {
               pagination={pagination}
             />
             <CreateModal isOpen={isCreateModalOpen} close={closeCreateModal} />
-            {isUpdateModalOpen && (
-              <UpdateModal
-                isOpen={selectedId !== null}
-                close={closeUpdateModal}
-                entry={data?.entryList.find((item) => item.id === selectedId)!}
-              />
-            )}
+            <UpdateModal
+              isOpen={isUpdateModalOpen}
+              close={closeUpdateModal}
+              entry={selectedItem}
+            />
           </>
         )}
       </main>

@@ -1,18 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
-import {
-  CreateJobErrorResponse,
-  CreateJobErrors,
+import type {
   CreateJobParams,
   GetJobsResponse,
   JobServerModel,
   JobTableEntry,
   UpdateJobParams,
 } from "../model/schema"
-import {
-  SuccessfulApiResponse,
-  SuccessfulApiResponseWithMeta,
-  UnsuccessfulApiResponse,
-} from "@/shared/api/model/schema"
+import { transformErrorResponse, type SuccessfulApiResponse } from "@/shared/api"
 
 export const jobsApi = createApi({
   reducerPath: "jobs",
@@ -20,8 +14,9 @@ export const jobsApi = createApi({
     baseUrl: "http://localhost:3000" + "/jobs",
   }),
   tagTypes: ["jobs"],
+  keepUnusedDataFor: 1800,
   endpoints: (builder) => ({
-    getJobs: builder.query<GetJobsResponse, {}>({
+    getJobs: builder.query<GetJobsResponse, void>({
       query: () => ({
         url: "",
       }),
@@ -46,14 +41,7 @@ export const jobsApi = createApi({
           unit_ids,
         },
       }),
-      transformErrorResponse: (response): CreateJobErrorResponse => {
-        return {
-          errors: (response.data as UnsuccessfulApiResponse).errors.reduce(
-            (prev, curr) => ({ ...prev, [curr[0]]: curr[1] }),
-            {} as CreateJobErrors,
-          ),
-        }
-      },
+      transformErrorResponse,
       invalidatesTags: ["jobs"],
     }),
     updateJob: builder.mutation<JobTableEntry, UpdateJobParams>({
@@ -62,14 +50,7 @@ export const jobsApi = createApi({
         method: "PUT",
         body,
       }),
-      transformErrorResponse: (response): CreateJobErrorResponse => {
-        return {
-          errors: (response.data as UnsuccessfulApiResponse).errors.reduce(
-            (prev, curr) => ({ ...prev, [curr[0]]: curr[1] }),
-            {} as CreateJobErrors,
-          ),
-        }
-      },
+      transformErrorResponse,
       invalidatesTags: ["jobs"],
     }),
   }),

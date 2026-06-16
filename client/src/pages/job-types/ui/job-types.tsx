@@ -1,36 +1,27 @@
-import { Button, Flex, Table, Typography } from "antd"
-import { useState, type FC } from "react"
-import CreateModal from "./create-modal"
-import { useModal } from "@/widgets/modal"
-import { useTableData } from "../api/use-table-data"
+import Button from "antd/es/button"
+import Flex from "antd/es/flex"
+import Table from "antd/es/table"
+import Typography from "antd/es/typography"
+import { type FC } from "react"
+import {
+  ModalContextProvider,
+  useCreateModal,
+  useUpdateModal,
+} from "@/widgets/modal"
 import { columns } from "@/entities/job"
-import { ModalContextProvider } from "./modal-context"
+import CreateModal from "./create-modal"
 import UpdateModal from "./update-modal"
+import { useJobs } from "../api/use-jobs"
 
 const JobTypes: FC = () => {
-  const [isCreateModalOpen, openCreateModal, closeCreateModal] = useModal()
-  const { data, isLoading, isError } = useTableData()
-
-  const [selectedId, setSelectedId] = useState<number | null>(null)
-
-  const openUpdateModal = (id: number) => {
-    setSelectedId(id)
-  }
-
-  const closeUpdateModal = () => {
-    setSelectedId(null)
-  }
-
-  const isUpdateModalOpen = selectedId !== null
+  const { jobList, isLoading, isError } = useJobs()
+  const [isCreateModalOpen, openCreateModal, closeCreateModal] =
+    useCreateModal()
+  const { isUpdateModalOpen, openUpdateModal, closeUpdateModal, selectedItem } =
+    useUpdateModal(jobList)
 
   return (
-    <ModalContextProvider
-      update={{
-        isOpen: isUpdateModalOpen,
-        open: openUpdateModal,
-        close: closeUpdateModal,
-      }}
-    >
+    <ModalContextProvider open={openUpdateModal}>
       <main>
         <Typography.Title>Виды работ</Typography.Title>
         <Flex justify="end">
@@ -41,19 +32,13 @@ const JobTypes: FC = () => {
         {isError && <Typography.Text>Ошибка</Typography.Text>}
         {!isLoading && !isError && (
           <>
-            <Table
-              dataSource={data?.jobList}
-              columns={columns}
-              pagination={false}
-            />
+            <Table dataSource={jobList} columns={columns} pagination={false} />
             <CreateModal isOpen={isCreateModalOpen} close={closeCreateModal} />
-            {isUpdateModalOpen && (
-              <UpdateModal
-                isOpen={selectedId !== null}
-                close={closeUpdateModal}
-                job={data?.jobList.find((item) => item.id === selectedId)!}
-              />
-            )}
+            <UpdateModal
+              isOpen={isUpdateModalOpen}
+              close={closeUpdateModal}
+              job={selectedItem}
+            />
           </>
         )}
       </main>

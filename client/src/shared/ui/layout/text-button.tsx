@@ -1,23 +1,31 @@
-import type { FC, ReactNode } from "react"
-import { Button } from "antd"
-import { useLocation } from "react-router"
+import type { CSSProperties, FC, ReactNode } from "react"
+import Typography from "antd/es/typography"
+import { useLocation, Link } from "react-router"
 
 interface TextButtonProps {
   pathname: string
   children: ReactNode
 }
 
+const disabledStyles: CSSProperties = {
+  cursor: "not-allowed",
+  opacity: 0.5,
+  color: "grey",
+}
+
 const TextButton: FC<TextButtonProps> = ({ pathname, children }) => {
   const currentPathname = useLocation().pathname
   return (
-    <Button
-      type="link"
-      style={{ paddingInline: 0 }}
-      href={pathname}
-      disabled={currentPathname === pathname}
-    >
-      {children}
-    </Button>
+    <Typography.Text>
+      <Link
+        to={pathname}
+        style={currentPathname === pathname ? disabledStyles : {}}
+      >
+        {children}
+      </Link>
+    </Typography.Text>
+
+    // </Button>
   )
 }
 

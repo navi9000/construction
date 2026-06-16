@@ -1,11 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import {
-  SuccessfulApiResponseWithMeta,
-  UnsuccessfulApiResponse,
-} from "@/shared/api/model/schema"
-import {
-  CreateEntryErrorResponse,
-  CreateEntryErrors,
+  transformErrorResponse,
+  type SuccessfulApiResponseWithMeta,
+} from "@/shared/api"
+import type {
   CreateEntryParams,
   EntryServerModel,
   EntryTableEntry,
@@ -20,6 +18,7 @@ export const entriesApi = createApi({
     baseUrl: "http://localhost:3000" + "/entries",
   }),
   tagTypes: ["entries"],
+  keepUnusedDataFor: 1800,
   endpoints: (builder) => ({
     getEntries: builder.query<GetEntriesResponse, GetEntriesParams>({
       query: (params) => ({
@@ -45,14 +44,7 @@ export const entriesApi = createApi({
         method: "POST",
         body,
       }),
-      transformErrorResponse: (response): CreateEntryErrorResponse => {
-        return {
-          errors: (response.data as UnsuccessfulApiResponse).errors.reduce(
-            (prev, curr) => ({ ...prev, [curr[0]]: curr[1] }),
-            {} as CreateEntryErrors,
-          ),
-        }
-      },
+      transformErrorResponse,
       invalidatesTags: ["entries"],
     }),
     updateEntry: builder.mutation<EntryTableEntry, UpdateEntryParams>({
@@ -61,14 +53,7 @@ export const entriesApi = createApi({
         method: "PUT",
         body,
       }),
-      transformErrorResponse: (response): CreateEntryErrorResponse => {
-        return {
-          errors: (response.data as UnsuccessfulApiResponse).errors.reduce(
-            (prev, curr) => ({ ...prev, [curr[0]]: curr[1] }),
-            {} as CreateEntryErrors,
-          ),
-        }
-      },
+      transformErrorResponse,
       invalidatesTags: ["entries"],
     }),
     deleteEntry: builder.mutation<EntryTableEntry, number>({
@@ -76,14 +61,7 @@ export const entriesApi = createApi({
         url: `/${id}`,
         method: "DELETE",
       }),
-      transformErrorResponse: (response): CreateEntryErrorResponse => {
-        return {
-          errors: (response.data as UnsuccessfulApiResponse).errors.reduce(
-            (prev, curr) => ({ ...prev, [curr[0]]: curr[1] }),
-            {} as CreateEntryErrors,
-          ),
-        }
-      },
+      transformErrorResponse,
       invalidatesTags: ["entries"],
     }),
   }),

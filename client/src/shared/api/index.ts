@@ -3,4 +3,9 @@ export type {
   ApiErrorMessage,
   ApiResponse,
   ApiResponseWithMeta,
-} from "./model/schema"
+  SuccessfulApiResponse,
+  SuccessfulApiResponseWithMeta,
+  UnsuccessfulApiResponse,
+} from "./schema"
+
+export { transformErrorResponse } from "./transform-error-response"

@@ -1,19 +1,15 @@
-import {
-  Modal,
-  Input,
-  Form,
-  DatePicker,
-  Space,
-  Select,
-  Typography,
-  Flex,
-} from "antd"
+import DatePicker from "antd/es/date-picker"
+import Flex from "antd/es/flex"
+import Form from "antd/es/form"
+import Input from "antd/es/input"
+import Modal from "antd/es/modal"
+import Select from "antd/es/select"
+import Space from "antd/es/space"
 import { ChangeEventHandler, FC, useState } from "react"
 import { Dayjs } from "dayjs"
-import { useGetJobsQuery } from "@/entities/job"
-import { GetJobsResponse } from "@/entities/job/model/schema"
-import { useAddEntryMutation } from "@/entities/entry"
-import { CreateEntryErrors } from "@/entities/entry/model/schema"
+import { useGetJobsQuery, type GetJobsResponse } from "@/entities/job"
+import { useAddEntryMutation, type CreateEntryErrors } from "@/entities/entry"
+import { FormErrorMessage } from "@/shared/ui"
 
 interface TableModalProps {
   isOpen: boolean
@@ -36,7 +32,7 @@ const getCreateEntryErrors = (
 }
 
 const CreateModal: FC<TableModalProps> = ({ isOpen, close }) => {
-  const { data: jobsData } = useGetJobsQuery({})
+  const { data: jobsData } = useGetJobsQuery()
   const [addEntry, { isLoading, error }] = useAddEntryMutation()
 
   const [date, setDate] = useState<Dayjs | null>(null)
@@ -89,18 +85,17 @@ const CreateModal: FC<TableModalProps> = ({ isOpen, close }) => {
   }
 
   const onSubmit = async () => {
-    try {
-      const response = await addEntry({
-        date: date?.format("YYYY-MM-DD") ?? "",
-        unit_id: unitType ? Number(unitType) : -1,
-        job_id: jobType ? Number(jobType) : -1,
-        worker_name: workerName,
-        amount: Number(amount),
-      })
-      if (!response.error) {
-        close()
-      }
-    } catch {}
+    const { error } = await addEntry({
+      date: date?.format("YYYY-MM-DD") ?? "",
+      unit_id: unitType ? Number(unitType) : -1,
+      job_id: jobType ? Number(jobType) : -1,
+      worker_name: workerName,
+      amount: Number(amount),
+    })
+
+    if (!error) {
+      close()
+    }
   }
 
   const onCancel = () => {
@@ -129,11 +124,7 @@ const CreateModal: FC<TableModalProps> = ({ isOpen, close }) => {
               value={date}
               onChange={(date) => setDate(date)}
             />
-            {addEntryErrors?.date && (
-              <Typography.Text type="danger">
-                {addEntryErrors.date}
-              </Typography.Text>
-            )}
+            <FormErrorMessage message={addEntryErrors?.date} />
           </Flex>
         </Form.Item>
         <Form.Item label="Вид работ">
@@ -143,11 +134,7 @@ const CreateModal: FC<TableModalProps> = ({ isOpen, close }) => {
             onChange={onChangeJobType}
             notFoundContent={<div>Не найдено</div>}
           />
-          {addEntryErrors?.job_id && (
-            <Typography.Text type="danger">
-              {addEntryErrors.job_id}
-            </Typography.Text>
-          )}
+          <FormErrorMessage message={addEntryErrors?.job_id} />
         </Form.Item>
         <Form.Item label="Объем">
           <Space.Compact style={{ width: "100%" }}>
@@ -160,16 +147,8 @@ const CreateModal: FC<TableModalProps> = ({ isOpen, close }) => {
             />
           </Space.Compact>
           <Flex vertical>
-            {addEntryErrors?.unit_id && (
-              <Typography.Text type="danger">
-                {addEntryErrors.unit_id}
-              </Typography.Text>
-            )}
-            {addEntryErrors?.amount && (
-              <Typography.Text type="danger">
-                {addEntryErrors.amount}
-              </Typography.Text>
-            )}
+            <FormErrorMessage message={addEntryErrors?.unit_id} />
+            <FormErrorMessage message={addEntryErrors?.amount} />
           </Flex>
         </Form.Item>
         <Form.Item label="ФИО">
@@ -177,11 +156,7 @@ const CreateModal: FC<TableModalProps> = ({ isOpen, close }) => {
             value={workerName}
             onChange={(e) => setWorkerName(e.target.value)}
           />
-          {addEntryErrors?.worker_name && (
-            <Typography.Text type="danger">
-              {addEntryErrors.worker_name}
-            </Typography.Text>
-          )}
+          <FormErrorMessage message={addEntryErrors?.worker_name} />
         </Form.Item>
       </Form>
     </Modal>

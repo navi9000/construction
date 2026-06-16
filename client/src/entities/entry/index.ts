@@ -12,4 +12,5 @@ export {
   columns,
   type EntryTableEntry,
   type CreateEntryErrors,
+  type GetEntriesParams,
 } from "./model/schema"

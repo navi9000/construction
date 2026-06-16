@@ -1,90 +1,28 @@
-import { JobTableEntry, type CreateJobErrors } from "@/entities/job"
-import { useUpdateJobMutation } from "@/entities/job/api/jobs-api"
-import {
-  useAddUnitMutation,
-  useGetUnitsQuery,
-  type UnitOption,
-} from "@/entities/unit"
-import { Modal, Input, Form, Select, Button, Typography } from "antd"
-import { FC, MouseEventHandler, useState } from "react"
+import type { JobTableEntry } from "@/entities/job"
+import Modal from "antd/es/modal"
+import { type FC, type MouseEventHandler, useState } from "react"
+import ModalForm from "./modal-form"
+import observer from "@/shared/utils/observer"
 
 interface TableModalProps {
   isOpen: boolean
   close: () => void
-  job: JobTableEntry
-}
-
-const getUpdateJobErrors = (error: unknown): CreateJobErrors | undefined => {
-  if (!error || typeof error !== "object" || !("errors" in error)) {
-    return undefined
-  }
-
-  return error.errors as CreateJobErrors
+  job: JobTableEntry | null
 }
 
 const UpdateModal: FC<TableModalProps> = ({ isOpen, close, job }) => {
-  const { data } = useGetUnitsQuery({})
-  const [addUnit, { isLoading: isAddingUnit }] = useAddUnitMutation()
-  const [updateJob, { isLoading: isUpdatingJob, error: updateJobError }] =
-    useUpdateJobMutation()
-  const [name, setName] = useState(job.name)
-  const [selectedUnits, setSelectedUnits] = useState<UnitOption[]>(
-    (data?.optionList ?? []).filter((option) =>
-      job.units.map((unit) => unit.id.toString()).includes(option.value),
-    ),
-  )
-  const [unitSearch, setUnitSearch] = useState("")
-  const updateJobErrors = getUpdateJobErrors(updateJobError)
+  const [isLoading, setIsLoading] = useState(false)
 
-  const newUnitName = unitSearch.trim()
-  const hasMatchingUnit = data?.optionList.some(
-    (unit) => unit.label.toLowerCase() === newUnitName.toLowerCase(),
-  )
-  const canAddUnit = newUnitName.length > 0 && !hasMatchingUnit
-
-  const handleAddUnit = async () => {
-    if (!canAddUnit) {
-      return
-    }
-
-    const createdUnit = await addUnit({ name: newUnitName }).unwrap()
-    const createdUnitOption = {
-      label: createdUnit.name,
-      value: createdUnit.id.toString(),
-    }
-
-    setSelectedUnits((currentUnits) => {
-      const alreadySelected = currentUnits.some(
-        (unit) => unit.value === createdUnitOption.value,
-      )
-
-      return alreadySelected
-        ? currentUnits
-        : [...currentUnits, createdUnitOption]
+  const onSubmit: MouseEventHandler = async () => {
+    setIsLoading(true)
+    observer.notify({
+      type: "update-job",
+      resetLoader: () => setIsLoading(false),
     })
-    setUnitSearch("")
-  }
-
-  const onSubmit: MouseEventHandler = async (e) => {
-    try {
-      const { error } = await updateJob({
-        id: job.id,
-        name,
-        unit_ids: selectedUnits.map((unit) => Number(unit.value)),
-      })
-
-      if (!error) {
-        close()
-      }
-    } catch {}
   }
 
   const onCancel = () => {
     close()
-  }
-
-  if (!data) {
-    return null
   }
 
   return (
@@ -95,63 +33,9 @@ const UpdateModal: FC<TableModalProps> = ({ isOpen, close, job }) => {
       title="Новая запись"
       okText="Изменить"
       cancelText="Отмена"
-      okButtonProps={{ disabled: isUpdatingJob, loading: isUpdatingJob }}
+      okButtonProps={{ disabled: isLoading, loading: isLoading }}
     >
-      <Form>
-        <Form.Item label="Вид работ">
-          <Input value={name} onChange={(e) => setName(e.target.value)} />
-          {updateJobErrors?.name && (
-            <Typography.Text type="danger">
-              {updateJobErrors.name}
-            </Typography.Text>
-          )}
-        </Form.Item>
-        <Form.Item label="Единица измерения">
-          <Select
-            labelInValue
-            showSearch={{
-              searchValue: unitSearch,
-              onSearch: setUnitSearch,
-              optionFilterProp: "label",
-            }}
-            options={data.optionList}
-            mode="multiple"
-            value={selectedUnits}
-            onChange={setSelectedUnits}
-            popupRender={(menu) => {
-              return (
-                <>
-                  {menu}
-                  {canAddUnit && (
-                    <div
-                      style={{ padding: "8px" }}
-                      onMouseDown={(event) => {
-                        event.preventDefault()
-                        event.stopPropagation()
-                      }}
-                    >
-                      <Button
-                        block
-                        type="text"
-                        loading={isAddingUnit}
-                        onClick={handleAddUnit}
-                      >
-                        Добавить "{newUnitName}"
-                      </Button>
-                    </div>
-                  )}
-                </>
-              )
-            }}
-            notFoundContent={<div>Не найдено</div>}
-          />
-          {updateJobErrors?.unit_ids && (
-            <Typography.Text type="danger">
-              {updateJobErrors.unit_ids}
-            </Typography.Text>
-          )}
-        </Form.Item>
-      </Form>
+      {isOpen && <ModalForm job={job} close={close} />}
     </Modal>
   )
 }
